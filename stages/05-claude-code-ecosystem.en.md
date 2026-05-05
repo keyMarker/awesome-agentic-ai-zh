@@ -371,6 +371,26 @@ pip install mcp
 
 ---
 
+#### [anthropics/life-sciences](https://github.com/anthropics/life-sciences) (domain-specialized example)
+
+| Field | Value |
+|---|---|
+| Stars | ★ 331 |
+| License | NOASSERTION (marketplace itself has no SPDX; each MCP server is licensed by its own provider) |
+| Recommendation | ⭐⭐⭐ |
+
+**What it teaches**: Anthropic's own **domain-specialized marketplace** example (for life sciences / health) — shows how to tailor `marketplace.json` for a single vertical instead of a generic catalog.
+
+**Best for**: Builders making vertical-specific marketplaces (healthcare, finance, legal, edu) who want to see how Anthropic handles it.
+
+**Notes**: Payload is bio-leaning MCP servers, but the marketplace.json shape is the actual lesson.
+
+---
+
+> **"How to publish your own marketplace" tutorial is still missing** — the most reliable resource is currently [Anthropic's official plugin docs](https://docs.claude.com/en/docs/claude-code/plugins). Have you written a high-quality walkthrough? PRs welcome.
+
+---
+
 #### [rohitg00/awesome-claude-code-toolkit](https://github.com/rohitg00/awesome-claude-code-toolkit)
 
 | Recommendation | ⭐⭐⭐ |

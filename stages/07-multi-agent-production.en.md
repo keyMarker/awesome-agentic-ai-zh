@@ -198,7 +198,7 @@ npx promptfoo eval
 
 | Field | Value |
 |---|---|
-| Stars | ★ 1k+ |
+| Stars | ★ 1.4k+ |
 | License | NOASSERTION |
 | Recommendation | ⭐⭐⭐⭐ |
 

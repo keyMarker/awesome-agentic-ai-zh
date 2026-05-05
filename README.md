@@ -89,6 +89,8 @@ cd awesome-agentic-ai-zh
 
 > **總時程**：主幹最少 **14-19 週**、現實 **5-6 個月**（每週 5-8 hr 兼職）
 
+> 💡 **想看跨 stage 完整範例？** [7 步打造你的第一個 AI Agent](walkthroughs/build-first-agent-in-7-steps.md) — 同一個 Paper Summary Bot 從 Stage 1 一路寫到 Stage 7，~350 行真實程式碼
+
 走完主幹後從 4 條 specialized branch 選一條繼續：
 
 | Branch | 適合誰 | 主題 |
@@ -144,28 +146,28 @@ cd awesome-agentic-ai-zh
 
 ---
 
-## 📍 現況：Phase 2 進行中
+## 📍 現況：Phase 3 完成
 
 **Phase 1（已完成）** — 7 階段骨架 + anchor curation（115+ 個 project）
 
-**Phase 2（進行中）** — Polish & Fill：
-- [x] `resources/style-guide.md` — 術語、entry schema、license 慣例（[zh](resources/style-guide.md) / [en](resources/style-guide.en.md)）
+**Phase 2（已完成）** — Polish & Fill：
+- [x] `resources/style-guide.md`（[zh](resources/style-guide.md) / [en](resources/style-guide.en.md)）
 - [x] `.github/` 模板（issue + PR template）
-- [x] Hello-X 格式統一（Stages 6-7 從 bullet-list 改成 `### Hello-X` headers）
-- [x] Hello-X 擴充（Stage 1 +2、Stage 4 +2）
-- [x] Branches back-nav（4 個 branch + en companion 共 8 個檔案）
-- [x] 教師 branch 加 prompt 素材庫
-- [ ] 補到 130-160 curated projects（目前 116+）
+- [x] Hello-X 格式統一（Stages 6-7）+ 擴充（Stage 1 +2、Stage 4 +2）
+- [x] Branches back-nav（8 個檔案）+ 教師 branch 加 prompt 素材庫
 
-**Phase 3（規劃中）** — Curation depth：
-- 補到 130-160 entries
-- Stage 0 reference 擴充
-- 跨 stage walkthrough：「7 步打造你的第一個 agent」
-- 連結 / 星數定期 refresh script
+**Phase 3（已完成）** — Curation depth：
+- [x] Stage 0 reference 擴充（CLI / Shell section、Hello-API auth）
+- [x] Stage 5.4 加 `anthropics/life-sciences` 領域特化範例
+- [x] for-researcher Multi-Agent for Research（+open_deep_research、AI-Scientist-v2）
+- [x] **跨 stage [walkthrough](walkthroughs/build-first-agent-in-7-steps.md)：7 步打造 Paper Summary Bot**
+- [x] 維護腳本：[`scripts/check-links.py`](scripts/check-links.py) + [`refresh-stars.py`](scripts/refresh-stars.py)
+- [ ] 補到 130-160 entries（目前 120+）— Phase 4 同步進行
 
 **Phase 4（規劃中）** — Visual polish：
 - Stage 5 stack diagram SVG（取代 ASCII）
 - README hero diagram + branch decision tree
+- 邊累積到 130-160 entries
 
 **Phase 5（規劃中）** — Distribution：PDF / GitBook 版本
 

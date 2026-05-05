@@ -100,7 +100,37 @@ Claude Code infrastructure for PhD researchers — skills, agents, hooks, rules 
 
 ### Multi-Agent for Research
 
-> This is currently a community PR opportunity. If you've built a quality multi-agent paper-review or research-design workflow, please open a PR.
+#### [langchain-ai/open_deep_research](https://github.com/langchain-ai/open_deep_research) ⭐⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 11k+ |
+| License | MIT |
+
+**What it teaches**: Open-source Deep Research — supports both single-agent and supervisor + multi-researcher architectures (the multi-agent path currently lives in `src/legacy/`), parallel search, citation-grounded report synthesis. A solid reference for "LLM agent that auto-produces a cited brief."
+
+**Best for**: Researchers building "agent auto-generates a cited brief" workflows. The most canonical open-source pick in this category.
+
+**Notes**: Depends on LangGraph + search tools (API key required).
+
+---
+
+#### [SakanaAI/AI-Scientist-v2](https://github.com/SakanaAI/AI-Scientist-v2) ⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 6k+ |
+| License | The AI Scientist Source Code License (source-available, non-commercial + manuscript-disclosure clause) |
+
+**What it teaches**: End-to-end multi-agent science loop: ideate → code → experiment → write → peer-review. Sakana AI's research implementation of "AI writes a full ML paper."
+
+**Best for**: Researchers who want to see "what does a swarm of agents running a full research lifecycle look like." Architecture reference, not a production tool.
+
+**Notes**: Outputs are demo-level (not field-ready), ML/CS-domain bias. License is a custom source-available term (with a manuscript-disclosure clause) — read the LICENSE file before use.
+
+---
+
+> Still missing: actively-maintained peer-review automation, conference-review pipelines. If you've built or know of one, please open a PR.
 
 ## Required Reading
 

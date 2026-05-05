@@ -21,7 +21,7 @@ Editor-integrated AI pair programmer. Industry standard for AI-assisted coding.
 ★ 44k+ · Apache-2.0 — git-aware CLI pair-programmer. Edits files in your repo directly and writes commits for you. **The open-source reference for "git-native AI editing."** Model-agnostic.
 
 #### [anthropics/claude-code](https://github.com/anthropics/claude-code) ⭐⭐⭐⭐⭐
-Anthropic's official agentic coding assistant. Skills + plugins ecosystem.
+★ 120k+ — Anthropic's official agentic coding assistant. Skills + plugins ecosystem.
 
 #### [cline/cline](https://github.com/cline/cline) ⭐⭐⭐⭐⭐
 ★ 61k+ · Apache-2.0 — VS Code extension, autonomous in-IDE agent: tool use, browser, step-by-step approval. **The first pick for VS Code users wanting IDE-native agentic dev.**

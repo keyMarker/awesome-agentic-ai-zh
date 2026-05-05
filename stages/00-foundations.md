@@ -27,27 +27,39 @@
 
 - **Hello Python** — 寫一個 Python script 呼叫 https://api.github.com/users/torvalds 並印出 follower 數量
 - **Hello git** — clone 任何一個公開 repo，做一次 commit，push 到自己的 fork
+- **Hello CLI** — 用命令列建幾個資料夾跟檔案（macOS / Linux：`mkdir project && cd project && mkdir src tests docs`；Windows PowerShell：`New-Item -ItemType Directory -Path project,project\src,project\tests,project\docs`）、執行 Python script、把輸出存到檔案
 - **Hello YAML** — 用 Python 讀一個 `.yaml` 設定檔，改一個值，再寫回去
+- **Hello API auth** — 去 [github.com/settings/tokens](https://github.com/settings/tokens) 產生一個 personal access token（給最少權限：`read:user`），呼叫 `https://api.github.com/user` 需 auth 的 endpoint，看 401（無 token）vs 200（帶 token）的差別。注意：production agent 一定會用到 API auth，所以這一題要做
 
 ## 🎯 精選資源（不是完整 Project，只是學習素材）
 
 ### Python
 - [**Python Crash Course**](https://github.com/ehmatthes/pcc_3e) — 書 + 練習（書要付費，練習免費）
 - [**Real Python tutorials**](https://realpython.com/) — 高品質免費文章
-- **datawhalechina/learn-python (zh-CN)** — 中文 Python 入門
+- [**Corey Schafer YouTube**](https://www.youtube.com/c/Coreyms) — 影片教學，從基礎到進階，講解清楚
+- [**Boot.dev**](https://www.boot.dev/) — 互動式 Python 課程（部分免費）
+- [**runoob.com Python 教學**](https://www.runoob.com/python3/python3-tutorial.html) — 中文 Python 入門參考
 
 ### Git
 - [**Pro Git book**](https://git-scm.com/book/en/v2) — 免費完整參考書
 - [**Atlassian Git Tutorials**](https://www.atlassian.com/git/tutorials) — 以 workflow 為主
 - [**Oh Shit, Git!?!**](https://ohshitgit.com/) — 出包時的救命手冊
+- [**git-flight-rules**](https://github.com/k88hudson/git-flight-rules) — 「我搞砸了 X，怎麼救？」高人氣 cheat sheet
+
+### CLI / Shell
+- [**The Art of Command Line**](https://github.com/jlevy/the-art-of-command-line) — 涵蓋從新手到進階的命令列技巧（180k+ stars，多語言版）
+- [**Learn Shell**](https://www.learnshell.org/) — 互動式 Bash 教學
+- [**explainshell.com**](https://explainshell.com/) — 把任何 shell 指令拆解講解（debug 救星）
 
 ### REST API
 - [**MDN — HTTP**](https://developer.mozilla.org/en-US/docs/Web/HTTP) — 協定基礎
 - [**Postman Learning Center**](https://learning.postman.com/) — API 探索工具
+- [**HTTPie**](https://github.com/httpie/cli) — 比 `curl` 友善的命令列 HTTP client
 
 ### YAML / JSON
 - [**YAML 官網**](https://yaml.org/) — 規格
 - [**JSON crash course**](https://www.json.org/json-en.html) — 官方快速指南
+- [**jq**](https://github.com/jqlang/jq) — 命令列 JSON 處理工具（agent 工作中常用）
 
 ## 為什麼有這個階段
 

@@ -202,7 +202,7 @@ npx promptfoo eval
 
 | 欄位 | 內容 |
 |---|---|
-| Stars | ★ 1k+ |
+| Stars | ★ 1.4k+ |
 | License | NOASSERTION |
 | 推薦度 | ⭐⭐⭐⭐ |
 

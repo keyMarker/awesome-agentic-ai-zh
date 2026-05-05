@@ -22,7 +22,7 @@
 General writing / brainstorming skills. Adaptable for lesson prep.
 
 #### [Claude Code](https://github.com/anthropics/claude-code) (with custom CLAUDE.md) ⭐⭐⭐⭐⭐
-Best entry point for teachers. Use Claude.ai (web) for low-barrier start; upgrade to Claude Code for repeated workflows.
+★ 120k+ — Best entry point for teachers. Use Claude.ai (web) for low-barrier start; upgrade to Claude Code for repeated workflows.
 
 ### Teaching Course Materials (for teachers preparing classes)
 

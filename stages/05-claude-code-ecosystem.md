@@ -390,6 +390,26 @@ pip install mcp
 
 ---
 
+#### [anthropics/life-sciences](https://github.com/anthropics/life-sciences)（領域特化範例）
+
+| 欄位 | 內容 |
+|---|---|
+| Stars | ★ 331 |
+| License | NOASSERTION（marketplace 本身未提供 SPDX；裡面每個 MCP server 由各自 provider 授權） |
+| 推薦度 | ⭐⭐⭐ |
+
+**教什麼**：Anthropic 自己發的**領域特化 marketplace** 範例（針對生物 / 健康科學）——展示如何把 `marketplace.json` 為單一 vertical 量身設計，而不是塞通用清單。
+
+**適合誰**：要做特定領域 marketplace（醫療、金融、法律、教育等）的人，可以參考 Anthropic 自己怎麼處理。
+
+**備註**：payload 偏生科 MCP server，但 marketplace.json 結構本身才是學習重點。
+
+---
+
+> **「如何發佈自己的 marketplace」教學還缺**——目前最可靠的是 [Anthropic 官方 plugin 文件](https://docs.claude.com/en/docs/claude-code/plugins)。社群有寫過好的 walkthrough 部落格 / repo？歡迎開 PR 補上。
+
+---
+
 ## ✅ 進入 Stage 6 前的自我檢查
 
 你能不能：

@@ -23,7 +23,7 @@
 ★ 44k+ · Apache-2.0 — git-aware 的 CLI pair-programmer。直接編輯你 repo 中的檔案，commit 都自動寫好。**「git-native AI 編輯流程」的開源範本**。模型不限。
 
 #### [anthropics/claude-code](https://github.com/anthropics/claude-code) ⭐⭐⭐⭐⭐
-Anthropic 官方的 agentic coding 助理。有 Skills + plugin 生態系。
+★ 120k+ — Anthropic 官方的 agentic coding 助理。有 Skills + plugin 生態系。
 
 #### [cline/cline](https://github.com/cline/cline) ⭐⭐⭐⭐⭐
 ★ 61k+ · Apache-2.0 — VS Code extension，autonomous in-IDE agent：tool use、browser、step-by-step approval。**VS Code 用戶想要 IDE-native agentic dev 的首選**。
