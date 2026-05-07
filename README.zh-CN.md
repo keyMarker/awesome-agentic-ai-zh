@@ -53,6 +53,36 @@ cd awesome-agentic-ai-zh
 - 🌏 **中文 / 英文双语** — 简体中文为主、英文版完整对照
 - 🎓 **不只「框架」、还有「Claude Code 生态」** — MCP / Skills / Plugins 完整堆叠
 - 🔬 **5 条依用户分流的延伸路线** — 研究员 / 开发者 / 老师 / 知识工作者 / 日常用户
+- ⏱️ **预估时程写清楚** — 主干最少 14-19 周、现实 5-6 个月（每周 5-8 hr）
+
+---
+
+## 🗺️ 学习地图（两条学习路径）
+
+![AI Agent 学习地图](resources/diagrams/learning-map.zh-CN.png)
+
+走完 **Stage 0-2（共用基础）** 之后，依你的目的选一条学习路径：
+
+- **Track A — CLI Power User**：你想**用**现成的 CLI agent（Claude Code、Codex、OpenCode、Gemini CLI 等）把工作做顺、效率拉高，不打算自己从零写 agent。3 个 sub-stage（A1-A3）。
+- **Track B — Agent Builder**:  你想**从零构建**自己的 agent——学 framework、写 ReAct、设计 multi-agent。Stage 3-7 是主路线。
+
+两条学习路径**不互斥**——多数人是先走 A 把 CLI 用起来，再回到 B 学内部运作；或反过来也行。Stage 5（Claude Code 生态）两条路径都会用到。
+
+### 共用基础（Stage 0-2）
+
+| Stage | 主题 | 关键内容 | 预估时程 |
+|---|---|---|---|
+| **0** | [基础准备](stages/00-foundations.zh-CN.md) | Python · CLI · git · API · JSON | 1-2 周 |
+| **1** | [LLM 入门](stages/01-llm-basics.zh-CN.md) | token · API · 各家 LLM 比较 · 本地 LLM | 1 周 |
+| **2** | [Prompt 设计](stages/02-prompt-engineering.zh-CN.md) | 系统 prompt · few-shot · CoT | 1-2 周 |
+
+### Track A — CLI Power User（想用 CLI 把事情做完）
+
+| Stage | 主题 | 关键内容 | 预估时程 |
+|---|---|---|---|
+| **A1** | [CLI Agent 入门 + 选择](tracks/cli/A1-cli-intro.zh-CN.md) | 6 个主流 CLI 比较 · 安装 · 第一次跑 | 1 周 |
+| **A2** | [CLI Workflow Patterns](tracks/cli/A2-cli-workflow.zh-CN.md) | CLAUDE.md · slash command · 多步骤拆解 | 1-2 周 |
+| **A3** | [Integration & Production](tracks/cli/A3-cli-production.zh-CN.md) | MCP 接 CLI · CI 自动化 · cost / observability | 1-2 周 |
 
 > **Track A 预估总时程**：3-5 周（含 Stage 0-2 约 6-8 周）。核心参考：[`resources/cli-agents-guide.zh-CN.md`](resources/cli-agents-guide.zh-CN.md)。
 
