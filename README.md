@@ -4,7 +4,7 @@
 
 <div align="center">
 
-![AI Agent 學習地圖](resources/diagrams/learning-map.png)
+![AI Agent 學習路徑](resources/diagrams/banner.png)
 
 # awesome-agentic-ai-zh
 
