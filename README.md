@@ -177,7 +177,7 @@ cd awesome-agentic-ai-zh
 
 ## 🤝 如何貢獻
 
-這是一個開放共學的社群，歡迎各種貢獻：
+這個 repo 是一個 AI 學習文件，如果你也有蒐集很好的資源，也歡迎貢獻：
 
 - 🐛 **回報 Bug** — 內容錯誤、連結失效、過時資訊 → 開 Issue
 - 💡 **提建議** — 缺什麼 stage、該加哪個 project → 開 Issue 討論
@@ -210,6 +210,12 @@ PR 流程跟 style 規範請看 [CONTRIBUTING.md](CONTRIBUTING.md) 跟 [resource
 
 這些是純清單形式（看到再挑），本 repo 的不同點是有「**從 Stage 0 一路走到 production 的學習順序**」。
 
+### 貢獻者
+
+[![Contributors](https://contrib.rocks/image?repo=WenyuChiou/awesome-agentic-ai-zh)](https://github.com/WenyuChiou/awesome-agentic-ai-zh/graphs/contributors)
+
+新貢獻者會自動出現在上方。完整列表 → [GitHub Contributors](https://github.com/WenyuChiou/awesome-agentic-ai-zh/graphs/contributors)。
+
 ### 個人
 
 - [@WenyuChiou](https://github.com/WenyuChiou) — Maintainer
@@ -229,6 +235,12 @@ PR 流程跟 style 規範請看 [CONTRIBUTING.md](CONTRIBUTING.md) 跟 [resource
   note   = {7-stage learning path from prerequisites to advanced multi-agent systems, with curated projects + hello-X demos. Bilingual (zh-TW / English).}
 }
 ```
+
+---
+
+## 📈 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=WenyuChiou/awesome-agentic-ai-zh&type=Date)](https://star-history.com/#WenyuChiou/awesome-agentic-ai-zh&Date)
 
 ---
 

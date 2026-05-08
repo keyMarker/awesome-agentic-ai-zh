@@ -175,7 +175,7 @@ Common quick links:
 
 ## 🤝 Contributing
 
-This is an open community welcoming all contributions:
+This repo is an AI learning document — if you've also curated great resources, contributions are very welcome:
 
 - 🐛 **Bug reports** — wrong content, broken links, stale info → open Issue
 - 💡 **Suggestions** — missing stage / new project to add → open Issue to discuss
@@ -208,6 +208,12 @@ Other lists in the same space — useful to browse alongside this repo when hunt
 
 These are pure catalogs (browse and pick). This repo is different in that it has a **learning order from Stage 0 all the way to production**.
 
+### Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=WenyuChiou/awesome-agentic-ai-zh)](https://github.com/WenyuChiou/awesome-agentic-ai-zh/graphs/contributors)
+
+New contributors appear above automatically. Full list → [GitHub Contributors](https://github.com/WenyuChiou/awesome-agentic-ai-zh/graphs/contributors).
+
 ### Personal
 
 - [@WenyuChiou](https://github.com/WenyuChiou) — Maintainer
@@ -227,6 +233,12 @@ If this learning roadmap helps your study or work, please cite:
   note   = {7-stage learning path from prerequisites to advanced multi-agent systems, with curated projects + hello-X demos. Bilingual (zh-TW / English).}
 }
 ```
+
+---
+
+## 📈 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=WenyuChiou/awesome-agentic-ai-zh&type=Date)](https://star-history.com/#WenyuChiou/awesome-agentic-ai-zh&Date)
 
 ---
 
