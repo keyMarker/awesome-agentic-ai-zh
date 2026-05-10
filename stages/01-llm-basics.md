@@ -387,3 +387,7 @@ ollama serve             # 啟動 API server
 如果可以 → 進 [Stage 2 — Prompt Engineering](02-prompt-engineering.md)。
 
 如果不行 → 重看 Anthropic Quickstart + 把上面 3 個 hello-X 都跑一次。
+
+---
+
+> ✅ **Stage 1 完成？** 接下來 [**Stage 2 — Prompt Engineering**](02-prompt-engineering.md) 會用 5-12 小時帶你寫出可重用的結構化 prompt、用 few-shot 跟 chain-of-thought 解推理題、並學會用 eval 量化 prompt 改善幅度。**繼續往下走 →**

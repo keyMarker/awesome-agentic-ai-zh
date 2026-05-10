@@ -4,6 +4,8 @@
 
 ⏱ **时间估算**：1-2 周（约 5-12 小时）
 
+> 👋 **从 [Stage 1](01-llm-basics.zh-Hans.md) 来的**：好，你会调用 API 了——这 5-12 小时：写出可重用的结构化 prompt、用 few-shot 跟 chain-of-thought 解难题、用 eval 量化 prompt 改善幅度。**直接从这里开始的**：先确认你会调用 LLM API、会用 token 算成本——做不到请先回 [Stage 1](01-llm-basics.zh-Hans.md)。
+
 > 💡 用语不熟（prompt / few-shot / CoT / system prompt⋯）→ 翻 [`resources/glossary.zh-Hans.md`](../resources/glossary.zh-Hans.md)。
 
 ## 📌 学习目标

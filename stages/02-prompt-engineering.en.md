@@ -5,6 +5,8 @@
 
 ⏱ **Time estimate**: 1-2 weeks (~5-12 hours)
 
+> 👋 **Coming from [Stage 1](01-llm-basics.en.md)?** Good — you can call an API. The next 5-12 hours: write reusable structured prompts, use few-shot and chain-of-thought for hard reasoning tasks, and quantify prompt improvement with evals. **Jumped straight here?** Make sure you can call an LLM API and estimate cost in tokens — if not, head back to [Stage 1](01-llm-basics.en.md).
+
 > 💡 Term-unfamiliar? (prompt / few-shot / CoT / system prompt / …) → see [`resources/glossary.en.md`](../resources/glossary.en.md).
 
 ## 📌 Learning Goals

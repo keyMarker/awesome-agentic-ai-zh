@@ -385,6 +385,10 @@ Can you:
 - [ ] Quote roughly the per-token price for Claude Sonnet vs Opus
 - [ ] Name one strength of Claude vs GPT vs Gemini vs Llama
 
-If yes → proceed to [Stage 2 — Prompt Engineering](02-prompt-engineering.md).
+If yes → proceed to [Stage 2 — Prompt Engineering](02-prompt-engineering.en.md).
 
 If no → re-read the Anthropic Quickstart + run all 3 hello-X projects above.
+
+---
+
+> ✅ **Done with Stage 1?** Next, [**Stage 2 — Prompt Engineering**](02-prompt-engineering.en.md) takes 5-12 hours to walk you through writing reusable structured prompts, using few-shot and chain-of-thought for reasoning tasks, and learning to quantify prompt improvement with evals. **Keep going →**

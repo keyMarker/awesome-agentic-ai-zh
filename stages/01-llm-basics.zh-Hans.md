@@ -387,3 +387,7 @@ ollama serve             # 暴露 API server
 如果都完成了，恭喜，进入 [Stage 2 - Prompt Engineering](./02-prompt-engineering.zh-Hans.md)。
 
 如果卡住了，回到 Anthropic Quickstart + 完成至少 3 个 hello-X 脚本。
+
+---
+
+> ✅ **Stage 1 完成？** 接下来 [**Stage 2 — Prompt Engineering**](02-prompt-engineering.zh-Hans.md) 会用 5-12 小时带你写出可重用的结构化 prompt、用 few-shot 跟 chain-of-thought 解推理题、并学会用 eval 量化 prompt 改善幅度。**继续往下走 →**
