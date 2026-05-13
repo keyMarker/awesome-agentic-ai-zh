@@ -210,6 +210,8 @@ pip install mcp
 - **Exercise: SKILL with references** — add a `references/` markdown the skill can pull from
 - **Exercise: SKILL eval** — add `evals/evals.json` with 3-5 self-tests
 
+> 📦 **This repo bundles a meta-example**: [`examples/stage-5/tool-calling-tutor/`](../examples/stage-5/tool-calling-tutor/) is the matching skill exemplar for this stage — full frontmatter (with trigger phrases + Do NOT use for), three `references/` docs, and `evals/evals.json` with 5 test cases. **Fork it directly and customize**. Dual purpose: (a) learners install for self-use as an auto-loading debugger when stuck on tool calling; (b) the SKILL.md authoring reference for Stage 5 §5.3.
+
 ### Curated Projects
 
 > 💡 **Looking for daily-use Skills (NotebookLM, Excalidraw, Office docs, etc.)?**

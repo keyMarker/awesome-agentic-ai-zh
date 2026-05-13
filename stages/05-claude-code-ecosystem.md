@@ -212,6 +212,8 @@ pip install mcp
 - **練習：SKILL with references** — 加一份 `references/` markdown 讓 skill 可以引用
 - **練習：SKILL eval** — 加 `evals/evals.json`，放 3-5 個自我測試
 
+> 📦 **本 repo 自帶 meta-example**：[`examples/stage-5/tool-calling-tutor/`](../examples/stage-5/tool-calling-tutor/) 是這個 stage 的對應 skill 範本——完整 frontmatter（含 trigger phrases + Do NOT use for）、3 份 `references/`、`evals/evals.json` 5 個 test case，**直接 fork 改成你自己的 skill**。雙重用途：(a) 學習者自用、卡在 tool calling 時讓它 auto-load 幫你 debug；(b) Stage 5 §5.3 SKILL.md 寫法的對照樣板。
+
 ### 精選 Projects
 
 > 💡 **找日常用 Skill（NotebookLM、Excalidraw、Office docs 等）？**

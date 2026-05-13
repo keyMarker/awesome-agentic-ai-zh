@@ -75,6 +75,8 @@ If unsure, ask the user to run `ollama list` and verify.
 | Stage 3 folders `02/04/05/06` | ✅ Phase 3 done (2026-05-12) — Ollama `starter.py` + rename existing → `starter_anthropic.py` + trilingual READMEs in dual-path style |
 | Stage 1 folder `04-cross-provider` | ✅ Multi-provider (already includes Ollama via `call_ollama` in README) |
 | Stage 1 folder `05-error-handling` | ✅ Phase 3 done (2026-05-12) — openai SDK exceptions + same retry wrapper, trilingual READMEs |
+| Stage 3 doc inline simplified examples (練習 2-6) | ✅ Done (2026-05-12) — 5 new `<details>` blocks added inline (Path A 8-15 line cores), trilingual mirror, zh-Hans Trad-char drift fixed at lines 44/47/77/110/152 |
+| `examples/stage-5/tool-calling-tutor/` skill | ✅ Done (2026-05-12) — installable Claude Code skill (frontmatter + 5-step body), 3 references (debug-flowchart / schema-evolution / sdk-diff), evals.json with 5 cases, trilingual READMEs + translations. Dual purpose: learner-aid + Stage 5 §5.3 meta-example. Cross-referenced from stages/03 + stages/05 |
 | Stage 4/5/6/7 + Track A (38 exercises) | ⚪ Pending T3+ — full new write, Ollama-default by design |
 | `examples/README` LLM list + budget table | ✅ Done (3 langs) |
 | Per-stage budget callouts | ✅ Done for Stage 1+2+3 (3 langs each) |

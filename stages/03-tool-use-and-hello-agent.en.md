@@ -40,6 +40,8 @@ You should already:
 > 💰 **Stage 3 budget estimate** (6 exercises, tool-use heavy): **all local = $0**, **all haiku ≈ $0.50**, **all sonnet ≈ $1.50**. A typical ReAct loop is 4-6 tool calls × 5 exercises × 5 reps ≈ $0.80 haiku. Full budget: [`examples/README.en.md#recommended-llm-list`](../examples/README.en.md#recommended-llm-list-local--cloud-user-perspective).
 >
 > Full three-path trade-off in [`examples/README.en.md`](../examples/README.en.md#three-paths--default-is-ollama-cost-driven).
+>
+> 🆘 **Stuck?** Tool calling is the steepest curve in the curriculum. Install [`examples/stage-5/tool-calling-tutor/`](../examples/stage-5/tool-calling-tutor/) — when you prompt Claude Code with "why won't the LLM call my tool" or "what's wrong with my schema", it auto-loads and runs a 4-symptom diagnostic.
 
 ### Exercise 1: Function Calling (single tool, single call)
 Give Claude one tool (a fake weather API) and one question ("Is it raining in Taipei?"). Watch Claude call the tool, get the result, and answer.
