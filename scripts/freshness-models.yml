@@ -1,0 +1,95 @@
+# Freshness check — 2026 model whitelist + stale pattern list
+#
+# 維護節奏：每季 review、新 model release 時 commit 一次。
+# 用於：scripts/check-2026-freshness.py
+#
+# 邏輯：
+#   - stale_patterns 內每個 pattern 是「過時 model 名稱」
+#   - 出現該 pattern 但 ±N 行內沒有 qualifier_terms 任一字眼、就算 stale
+#   - qualifier_terms 例子：前身 / 歷史 / lineage / 舊版 / 原始 / baseline / paper
+#   - 這些字眼出現代表上下文已經承認這是 historical reference、不算 stale
+
+current_frontier_models:
+  # 2026-05 frontier list (review quarterly)
+  anthropic:
+    - "Opus 4.7"
+    - "Sonnet 4.6"
+    - "Haiku 4.5"
+  openai:
+    - "GPT-5.5"
+    - "GPT-5.4"
+    - "GPT-5"
+  deepseek:
+    - "DeepSeek-R2"
+    - "DeepSeek-V4"
+    - "DeepSeek-V4-Pro"
+    - "DeepSeek-V4-Flash"
+  google:
+    - "Gemini 3.1 Pro"
+    - "Gemini 3"
+  alibaba:
+    - "QwQ-32B"
+    - "QvQ-72B"
+
+# Stale patterns — 偵測過時 model name without proper historical qualifier
+stale_patterns:
+  - pattern: 'Claude 3\.5 Sonnet'
+    qualifier_terms: ['前身', '歷史', 'lineage', '舊版', '原始', 'baseline', 'predecessor', 'history']
+    note: 'Pre-2026 Claude version (Claude 3.5 Sonnet was current circa 2024-Q4)'
+
+  - pattern: 'Claude 3 Opus'
+    qualifier_terms: ['前身', '歷史', 'lineage', '舊版', '原始', 'baseline']
+    note: 'Pre-2025 Claude version'
+
+  - pattern: 'gpt-4o|GPT-4o'
+    qualifier_terms: ['前身', '歷史', 'lineage', '舊版', '原始', 'baseline', '對照', 'predecessor']
+    note: 'Pre-GPT-5 OpenAI flagship (GPT-4o was current 2024-mid through 2025-summer)'
+
+  - pattern: 'GPT-4(?!\.|o|\-|\d)'
+    qualifier_terms: ['前身', '歷史', 'lineage', '舊版', '原始', 'baseline']
+    note: 'Plain GPT-4 reference, likely stale'
+
+  - pattern: 'Gemini 1\.5|Gemini 2\.0|Gemini 2\.5(?! Thinking)'
+    qualifier_terms: ['前身', '歷史', 'lineage', '舊版', 'baseline']
+    note: 'Pre-Gemini 3 Google flagship'
+
+  - pattern: 'DeepSeek-R1(?!-Distill)'
+    qualifier_terms: ['前身', '歷史', 'lineage', '原始', 'baseline', 'paper', 'method']
+    note: '2025-01 DeepSeek reasoning model (superseded by R2 in 2026-03)'
+
+  - pattern: 'DeepSeek-V3(?!\.)'
+    qualifier_terms: ['前身', '歷史', 'lineage', '舊版']
+    note: 'Pre-V4 DeepSeek base model'
+
+  - pattern: 'o1-preview|o1-mini'
+    qualifier_terms: ['前身', '歷史', 'lineage', '原始', 'baseline']
+    note: 'Early OpenAI reasoning preview (Sep 2024)'
+
+# Stale date-bound framing — 時間性過時用詞
+stale_date_phrases:
+  - pattern: '2025 (年|下半年)?(才|新|剛).*?(發表|釋出|出|推出|公布)'
+    note: '"newly released in 2025" framing (now historical in 2026)'
+
+  - pattern: '2024 (剛|新|最新).*?(發表|釋出|推出)'
+    note: '"newly released in 2024" framing (now historical in 2026)'
+
+  - pattern: '剛發表|剛推出|剛釋出|新發表|甫推出'
+    qualifier_terms: ['2026', '本月', '上月', '今年']
+    note: 'Time-bound "newly released" without 2026 anchor'
+
+# Files to skip entirely
+exclude_files:
+  - 'CHANGELOG.md'
+  - 'CONTRIBUTORS.md'
+  - 'archives/**'
+  - '.ai/**'
+  - 'book/**'
+
+# Files where pre-2026 model refs are expected (don't warn)
+exclude_files_pattern_specific:
+  # Stage 6's reasoning lineage table is supposed to mention R1 as predecessor
+  - file: 'stages/06-memory-rag.md'
+    skip_patterns_with_context: 5  # widen qualifier window for this file
+
+# Context window — how many lines around a match to check for qualifier terms
+qualifier_context_lines: 2
