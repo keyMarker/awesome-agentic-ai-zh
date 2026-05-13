@@ -561,6 +561,8 @@ You are a senior code reviewer. When invoked:
 
 如果都可以 → 前往 [Stage 6 — Memory & RAG](06-memory-rag.md)。
 
+> 💡 **Stage 5 是兩 track 第一個 hub**——Track A 跟 Track B 都會用到。第二個 hub 是 [**Stage 8 — Agent Interfaces**](08-agent-interfaces.md)（Computer Use / Browser Use / Sandbox），可以走完主幹後再進、或對 Computer Use / Browser MCP 有興趣可以提前 preview。
+
 ## 💡 Bonus：完成這個階段之後
 
 - 對 [`anthropics/claude-cookbooks`](https://github.com/anthropics/claude-cookbooks) 發一個 PR（小修正、文件更新）
