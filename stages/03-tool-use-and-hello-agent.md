@@ -5,7 +5,7 @@
 ⏱ **時間估算**：2-3 週（約 10-20 小時）
 
 > 💡 用語密集（agent / tool use / function calling / ReAct / structured output⋯）→ 翻 [`resources/glossary.md` §2](../resources/glossary.md#2-agent--工具使用)。
-> 🗺️ **進 Track A（CLI Power User）還是 Track B（Agent Builder）前**，先看 [`resources/agent-paradigms.md`](../resources/agent-paradigms.md) — 5 種 agent 型態的全景圖，幫你選軌
+> 🗺️ **進 Track A（CLI Power User）還是 Track B（Agent Builder）前**，先看 [`resources/agent-paradigms.md`](../resources/agent-paradigms.md) — 5 種 agent 型態的全景圖，幫你選軌。
 
 這是整個學習路線最關鍵的一站。**你建過一個 agent 才算真懂 agent — 動手練習 不能跳。**
 
