@@ -1,0 +1,34 @@
+name: Anchor Validator
+
+# 內部 markdown anchor 連結驗證——避免 stage 之間 cross-ref 在 rename / cleanup 後破掉。
+# 本 session 已遇過 3 次破 anchor（Stage 7 cleanup / Stage 5.6 rename / tracks/cli/A3）、
+# 因此把 anchor validate 升為 CI-level check。
+
+on:
+  pull_request:
+    paths:
+      - '**.md'
+  schedule:
+    # 每月 1 號 UTC 04:00 跑（避開 lint.yml UTC 03:00）
+    - cron: '0 4 1 * *'
+  workflow_dispatch:
+
+jobs:
+  anchors:
+    name: Validate internal cross-file anchors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate anchors (warn-only)
+        # 目前 warn-only 模式——repo 有 ~38 個 legacy broken anchor（Stage 5 sub-heading
+        # 改過 ⭐ extras 後、cross-ref 連結沒全部跟到）。先用 warn 模式提示、不擋 PR。
+        #
+        # TODO：跑 anchor cleanup PR 把 legacy 38 個修完之後、把這行改成 `--strict`
+        # 讓 future PR 引入新 broken anchor 自動 fail。
+        run: python scripts/check-anchors.py
