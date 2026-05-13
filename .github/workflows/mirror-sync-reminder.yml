@@ -1,0 +1,54 @@
+name: Mirror Sync Reminder
+
+# 當 PR 改了 zh-TW canonical 但沒同步 .en.md / .zh-Hans.md mirror 時、
+# 自動在 PR 留一個 soft comment 提醒。不擋 PR——zh-TW 是 canonical、mirror sync 是 Path B。
+
+on:
+  pull_request:
+    paths:
+      - 'stages/**.md'
+      - 'branches/**.md'
+      - 'tracks/**.md'
+      - 'resources/**.md'
+      - 'walkthroughs/**.md'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+
+jobs:
+  mirror-check:
+    name: Detect mirror sync gap
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need full history for accurate diff against base ref
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Detect mirror sync gap
+        id: detect
+        run: |
+          python scripts/check-mirror-sync.py \
+            --pr-base origin/${{ github.base_ref }}
+
+      - name: Comment on PR if gap detected
+        if: steps.detect.outputs.gap_detected == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          # `header` makes the comment sticky — re-running the workflow
+          # updates the same comment instead of creating duplicates.
+          header: mirror-sync
+          path: .mirror-sync-comment.md
+
+      - name: Delete comment if gap resolved
+        if: steps.detect.outputs.gap_detected == 'false'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: mirror-sync
+          delete: true
