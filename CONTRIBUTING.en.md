@@ -1,6 +1,6 @@
 # Contributing
 
-> [繁體中文](./CONTRIBUTING.md) | **English**
+> [繁體中文](./CONTRIBUTING.md) | [简体中文](./CONTRIBUTING.zh-Hans.md) | **English**
 
 
 Thanks for considering a contribution. **This is a curated learning roadmap, not an exhaustive catalog. Quality > quantity.**
