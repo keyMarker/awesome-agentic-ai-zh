@@ -18,7 +18,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/WenyuChiou/awesome-agentic-ai-zh?logo=github)
 [![Docs site](https://img.shields.io/badge/docs-Pages-2ea44f)](https://wenyuchiou.github.io/awesome-agentic-ai-zh/)
 
-> **English companion. The zh-TW [README.md](README.md) is canonical** — content is curated in zh-TW first; this page mirrors it for English readers.
+> **Trilingual — the English edition is fully maintained, not a thin machine translation** (only ~0.4% of English lines carry any CJK, almost all intentional bilingual term-mapping). zh-TW is the curation source of truth (new content lands there first); the English and 简中 editions track the same structure, with CI checking localization correctness and anchor integrity across all three.
 
 **Learning roadmap + 145+ curated resources + simple illustrative cases** — three pillars helping you go from "I don't know where to start" to "I can design multi-agent systems". Structured **8-stage** path from LLM fundamentals to multi-agent orchestration, Computer Use / Browser Use / Code Sandbox.
 
@@ -33,7 +33,7 @@ Concretely:
 | Pillar | What it does | Scale |
 |---|---|---|
 | **Learning roadmap** | Organizes scattered high-quality projects, tutorials, and required reading into **8 stages** (including Stage 5 + Stage 8 as two shared hubs) + 2 tracks + 5 specialized branches, from zero to advanced | 8 stages, 2 tracks |
-| **Resource curation** | Each stage curates **145+** projects (star rating, audience, what they teach, how to run) plus an MCP/Skill catalog for the Chinese-language community | 145+ projects, 62 MCP/Skill |
+| **Resource curation** | Each stage curates **145+** projects (star rating, audience, what they teach, how to run) plus an MCP/Skill catalog covering the Chinese AI ecosystem (DeepSeek, Zhipu, Kimi, …) | 145+ projects, 62 MCP/Skill |
 | **Simple illustrative cases** | Each stage ships 1-5 **foundational exercises** (70-150 line starter + dual-path Ollama/Anthropic SDK comparison + mock-based tests) | 27 exercise folders |
 
 After the main path, you go from "**LLM user**" to "**agent system builder**" — capable of designing multi-agent collaboration, writing your own MCP server, and shipping real agent systems.
@@ -77,7 +77,7 @@ cd awesome-agentic-ai-zh
 - 🗺️ **Two learning tracks** — Track A (CLI Power User) for "use existing CLIs"; Track B (Agent Builder) for "build your own". Shared Stages 0-2 foundation.
 - 🛠️ **Foundational hands-on exercises** — 1-5 illustrative exercises per stage (specs + dual-path SDK comparison + success criteria). Positioned as **foundational + roadmap verification** — for chapter-length depth exercises see the hello-agents / Anthropic Cookbook callout in each stage
 - 🎯 **145+ curated projects** — each with star rating, audience, what it teaches, how to run (incl. local LLM runners: Ollama, llama.cpp, LocalAI, MLX)
-- 🌏 **Bilingual** — zh-TW canonical, English mirror
+- 🌏 **Trilingual, fully maintained** — zh-TW (canonical) / 简中 / English; the English edition is complete, not a thin mirror
 - 🎓 **Beyond frameworks: Claude Code ecosystem** — MCP / Skills / Plugins / SDK full stack
 - 🔬 **5 specialized branches** — researcher / developer / teacher / knowledge worker / **everyday user**
 - ⏱️ **Time commitment, stated upfront** — Track A 8-10 weeks / Track B 16-22 weeks minimum, 5-7 months realistic (5-8 hr/week part-time)
@@ -239,7 +239,7 @@ This repo is an AI learning document — if you've also curated great resources,
 - 💡 **Suggestions** — missing stage / new project to add → open Issue to discuss
 - 📝 **Improvements** — refine existing stage content, fix typos → direct PR
 - ✍️ **Add a project** — 1-3 new projects per stage with "why this teaches that stage" rationale
-- 🌏 **Translations** — improve the English companion or translate to other languages
+- 🌏 **Translations** — improve the English edition or translate to other languages
 - 🌱 **Become a Stage / Branch maintainer** — long-term review of a specific area, see [CONTRIBUTORS.md](CONTRIBUTORS.md)
 
 PR process and style rules: [CONTRIBUTING.md](CONTRIBUTING.md) + [resources/style-guide.en.md](resources/style-guide.en.md).
