@@ -113,10 +113,10 @@ bash scripts/build-mdbook.sh --serve   # 建好後本機開 server (port 3000)
 - 第一次跑前：`mdbook-mermaid install .`（會生成 `mermaid.min.js`、`mermaid-init.js`，工作流需要）
 
 **自動部署**：
-推 main branch 時，[`.github/workflows/deploy-book.yml`](../.github/workflows/deploy-book.yml) 會自動 build + deploy 到 GitHub Pages。
+推 main branch 時，[`.github/workflows/docs.yml`](../.github/workflows/docs.yml) 會自動 build mkdocs 站（`/` 首頁）+ mdBook（`/book/`）並 deploy 到 GitHub Pages。單一 workflow 擁有 Pages（兩個 workflow 各自 deploy 會互搶同一個 root，故已合併、刪除舊的 `deploy-book.yml`）。
 要啟用，去 Settings → Pages → Source: GitHub Actions。
 
 ## 整體 Phase 5 deploy 流程
 
-1. 推 main → `deploy-book.yml` 自動 build + deploy 到 `https://wenyuchiou.github.io/awesome-agentic-ai-zh/`
+1. 推 main → `docs.yml` 自動 build mkdocs（`/` 首頁）+ mdBook（`/book/`）並 deploy 到 `https://wenyuchiou.github.io/awesome-agentic-ai-zh/`
 2. PDF：手動跑 `bash scripts/build-pdf.sh`，把 `dist/*.pdf` 上傳到 GitHub Release（或自動化 release workflow，TBD）

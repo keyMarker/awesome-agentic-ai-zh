@@ -25,7 +25,7 @@
 | `scripts/build-pdf.sh` | ⚠️ Bash syntax OK | **沒實際跑過** pandoc + xelatex；沒驗證輸出的 PDF 真的能開、CJK 字型真的可用 |
 | `scripts/build-mdbook.sh` | ⚠️ Bash syntax OK | 跑過一次但 mdbook-mermaid 失敗（已 fix 但沒重跑驗證） |
 | `.github/workflows/lint.yml` | ⚠️ YAML valid | **沒在真 PR 上觸發過**——不知道 Linux runner 上 grep 行為跟本地 git-bash 是否一致 |
-| `.github/workflows/deploy-book.yml` | ⚠️ YAML valid | 跑過 1 次失敗（`<details>` Mermaid 問題）— **fix 已推但 Pages 還沒手動啟用、所以沒重跑** |
+| `.github/workflows/docs.yml` | ⚠️ YAML valid · 本機 mkdocs build 綠 | 統一 Pages workflow（mkdocs `/` + mdBook `/book/`，取代已刪除的 deploy-book.yml）。mdBook 子路徑 base-url 尚未在 CI 端到端驗證（首次 deploy 後需實測 `/book/` 資產） |
 | `walkthroughs/build-first-agent-in-7-steps.md` 的 Python 範例（~350 行）| ⚠️ 結構合理 | **完全沒實際跑過**——根據對 Anthropic SDK / LangGraph / Chroma / promptfoo 的理解寫出來，但沒從頭到尾 execute 一次。可能有：API 介面變動、套件版本相依、import path 微差 |
 | `book.toml` mdBook 設定 | ⚠️ TOML valid | 沒實際 build 過完整 site |
 

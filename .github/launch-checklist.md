@@ -15,7 +15,7 @@
 ## 🟡 Pre-launch（一次性手動 setup）
 
 - [ ] **GitHub Pages**：repo Settings → Pages → Source: **GitHub Actions**
-  - 啟用後，`.github/workflows/deploy-book.yml` 推 main 會自動 deploy 到 `https://wenyuchiou.github.io/awesome-agentic-ai-zh/`
+  - 啟用後，`.github/workflows/docs.yml` 推 main 會自動 build mkdocs（`/` 首頁）+ mdBook（`/book/`）並 deploy 到 `https://wenyuchiou.github.io/awesome-agentic-ai-zh/`（單一 workflow 擁有 Pages）
 - [ ] **GitHub Discussions**：repo Settings → Features → enable Discussions
   - Categories 建議：
     - 🙋 Q&A — 學習問題
