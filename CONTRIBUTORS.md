@@ -61,6 +61,7 @@
 | [@demo112](https://github.com/demo112) | **中國生態 catalog** — 新增 whale (DeepSeek terminal assistant) + a-stock-data (A 股工具包) 到 Chinese ecosystem ([#14](https://github.com/WenyuChiou/awesome-agentic-ai-zh/pull/14)) | 2026-05-14 |
 | [@Rain120](https://github.com/Rain120) | **zh-Hans 大陸在地化** — 系統盤點 zh-Hans 鏡像的台灣用詞,促成 `scripts/zh-hans-localize.py`(curated 台→陸詞表 + 大陸引號,已套全 54 檔並進 lint CI gate;貢獻者掛 commit `7f73b8a` Co-Author)([#18](https://github.com/WenyuChiou/awesome-agentic-ai-zh/pull/18)) | 2026-05-16 |
 | [@JunLin-Bobby](https://github.com/JunLin-Bobby) | **Stage 3 ReAct 練習 bug fix** — `trace.append` 移進 `for tc in tool_calls:` 迴圈內(原本在外層、一步多 tool 只記錄 `tool_calls[0]`)+ 為 question 內的 lookup key 加引號避免 LLM 跨語轉譯失敗(qwen2.5:3b + gemini-3-flash-preview 雙模型交叉驗證)([#26](https://github.com/WenyuChiou/awesome-agentic-ai-zh/pull/26)) | 2026-05-24 |
+| [@thebrierfox](https://github.com/thebrierfox) | **§12 Finance hosted-MCP example** — 新增 YIELD INTELLIGENCE MCP (hosted remote server) 到 §12 其他常用、tri-locale。catalog 第一個用 style-guide §1 非 repo entry exemption 的 hosted-service entry (`形式 = hosted MCP server` 取代 Stars/License)、為 Stage 5 學習者示範 hosted vs self-hosted MCP 架構差異 ([#28](https://github.com/WenyuChiou/awesome-agentic-ai-zh/pull/28)) | 2026-05-26 |
 
 ---
 
