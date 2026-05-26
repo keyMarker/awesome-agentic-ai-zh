@@ -36,7 +36,7 @@ python starter.py
 Expected:
 
 ```
-❓ Question: Divide Taipei's population by NYC's population, 4 decimal places.
+❓ Question: Divide 'Taipei population' by 'NYC population', 4 decimal places.
 ------------------------------------------------------------
 [step 0] thought: Let me look up Taipei's population...
            tool: lookup_fact({'query': '台北人口'}) → 2602000
