@@ -2,9 +2,9 @@
   <a href="./README.md">繁體中文</a> | <a href="./README.zh-Hans.md">简体中文</a> | <strong>English</strong>
 </div>
 
-<div align="center">
+<div align="center" markdown="1">
 
-![AI Agent Learning Roadmap](resources/diagrams/banner.en.png)
+![AI Agent Learning Roadmap](resources/diagrams/banner.png)
 
 # awesome-agentic-ai-zh
 
@@ -86,7 +86,7 @@ cd awesome-agentic-ai-zh
 
 ## 🗺️ Learning Map (Two Tracks)
 
-![AI Agent Learning Map](resources/diagrams/learning-map.en.png)
+![AI Agent Learning Map](resources/diagrams/learning-map.png)
 
 After **Stages 0-2 (shared foundations)**, pick a track based on your goal:
 
@@ -137,7 +137,7 @@ The two tracks are **not mutually exclusive** — most people start with A to ge
 
 After the main path, pick one of 5 specialized branches. **Not sure which?**
 
-![Branch decision tree](resources/diagrams/branch-decision-tree.en.png)
+![Branch decision tree](resources/diagrams/branch-decision-tree.png)
 
 > 💡 **The Everyday User branch can be read directly without walking the main path** — it's for people who want to use AI without writing code.
 

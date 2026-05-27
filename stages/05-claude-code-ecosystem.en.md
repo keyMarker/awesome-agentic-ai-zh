@@ -25,7 +25,7 @@
 
 From top to bottom, each layer builds on the one below it:
 
-![Claude Code Ecosystem Stack](../resources/diagrams/stage5-stack.en.png)
+![Claude Code Ecosystem Stack](../resources/diagrams/stage5-stack.png)
 
 Each layer adds a capability:
 - **API + SDK**: Programmatic access to the LLM.
@@ -51,7 +51,7 @@ After completing this stage, you will be able to extend Claude Code, write your 
 
 > 📋 **What this section is**: maps Claude Code's 7 primitives (MCP / Skills / Plugins / Subagents / Hooks / Slash commands / CLI) to **7 architecture layers + 3 engineering disciplines**. Read it once before 5.1-5.6 to know which layer each sub-chapter teaches; read it again afterward as synthesis. **The layering is a teaching choice, not an absolute truth**.
 
-![Claude Code 7-Layer Architecture Map](../resources/diagrams/claude-architecture-map.en.png)
+![Claude Code 7-Layer Architecture Map](../resources/diagrams/claude-architecture-map.png)
 
 > 📊 **Above**: Claude Code 7 architecture layers + 3 engineering disciplines integrated view.
 
@@ -508,7 +508,7 @@ Plugin
 
 Up to this point, you've learned about MCP (the tool layer), Skills (the behavior layer), and Plugins (the distribution layer). **Subagents are the orchestration layer**—they allow the main Claude session to spawn child agents with independent contexts to run specific tasks and report back the results.
 
-![Subagent 4-Stage Lifecycle: from .md file to returned summary](../resources/diagrams/subagent-4-stage-flow.en.png)
+![Subagent 4-Stage Lifecycle: from .md file to returned summary](../resources/diagrams/subagent-4-stage-flow.png)
 
 > 📊 **The diagram above** shows the 4 stages — **Definition → Discovery → Dispatch → Execution**. Read this first, then dive into the details below.
 
@@ -609,7 +609,7 @@ The **3 concept pairs** students confuse most often, plus **5 gotchas veterans l
 
 Many people treat Subagents and Skills as the same thing. They are actually **completely different layers**:
 
-![Subagent vs Skill — 5 Key Differences](../resources/diagrams/subagent-vs-skill.en.png)
+![Subagent vs Skill — 5 Key Differences](../resources/diagrams/subagent-vs-skill.png)
 
 | Dimension | Subagent | Skill |
 |---|---|---|

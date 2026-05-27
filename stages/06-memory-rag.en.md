@@ -46,7 +46,7 @@ The point is not "how many conversations you opened." The point is "**what you p
 
 ### Where it sits in the three-layer stack
 
-![Prompt → Context → Harness engineering stack](../resources/diagrams/prompt-context-harness-stack.en.png)
+![Prompt → Context → Harness engineering stack](../resources/diagrams/prompt-context-harness-stack.png)
 
 See [Stage 2](02-prompt-engineering.en.md) for the full comparison.
 
@@ -578,7 +578,7 @@ print(chunks[0])
 
 **Typical Architecture** (Full Persistent Memory Version):
 
-![Reflexion persistent episodic memory loop](../resources/diagrams/reflexion-persistent-memory-loop.en.png)
+![Reflexion persistent episodic memory loop](../resources/diagrams/reflexion-persistent-memory-loop.png)
 
 → **Difference from Stage 3 Reflection**: Stage 3 focuses on an **in-context loop within a single session** (no external store). This section covers **persistent episodic memory storage + retrieval across trials** to learn from past experiences.
 

@@ -10,7 +10,7 @@ Pairs with [Stage 7 — Multi-Agent & Production](../../../stages/07-multi-agent
 
 Three agents (PRO + CON + Judge) debate the same question:
 
-![Multi-agent debate: PRO / CON / Judge](../../../resources/diagrams/multi-agent-debate-flow.en.png)
+![Multi-agent debate: PRO / CON / Judge](../../../resources/diagrams/multi-agent-debate-flow.png)
 
 PRO and CON are called **independently** — they don't see each other's arguments (prevents bias propagation). The Judge sees both and decides.
 

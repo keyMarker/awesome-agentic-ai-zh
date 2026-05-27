@@ -2,7 +2,7 @@
   <strong>繁體中文</strong> | <a href="./README.zh-Hans.md">简体中文</a> | <a href="./README.en.md">English</a>
 </div>
 
-<div align="center">
+<div align="center" markdown="1">
 
 ![AI Agent 學習路徑](resources/diagrams/banner.png)
 

@@ -409,7 +409,7 @@ agent = Agent(
 
 ### 4 个防护模式（必须添加）
 
-![Agent 4 个防护模式](../resources/diagrams/agent-guardrail-patterns.zh-Hans.png)
+![Agent 4 个防护模式](../resources/diagrams/agent-guardrail-patterns.png)
 
 | 模式 | 如何实现 | 何时必须添加 |
 |---|---|---|
