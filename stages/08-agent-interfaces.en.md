@@ -409,7 +409,7 @@ In March 2026, a US federal judge issued a preliminary injunction against Comet,
 
 ### 4 Must-Have Defensive Patterns
 
-![Agent — 4 must-have defensive patterns](../resources/diagrams/agent-guardrail-patterns.png)
+![Agent — 4 must-have defensive patterns](../resources/diagrams/agent-guardrail-patterns.en.png)
 
 | Pattern | How to Implement | When it's a Must |
 |---|---|---|

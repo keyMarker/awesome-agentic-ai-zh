@@ -10,7 +10,7 @@
 
 3 个 agent（PRO + CON + Judge）对同问题辩论：
 
-![Multi-agent debate：PRO / CON / Judge](../../../resources/diagrams/multi-agent-debate-flow.png)
+![Multi-agent debate：PRO / CON / Judge](../../../resources/diagrams/multi-agent-debate-flow.zh-Hans.png)
 
 PRO 跟 CON **独立** call、互不看到对方论点（避免 bias propagation）；Judge 看完两边再裁决。
 

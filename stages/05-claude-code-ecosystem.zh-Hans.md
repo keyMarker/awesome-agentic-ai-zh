@@ -25,7 +25,7 @@
 
 由上往下，每一层都建立在底下那一层上：
 
-![Claude Code Ecosystem Stack](../resources/diagrams/stage5-stack.png)
+![Claude Code Ecosystem Stack](../resources/diagrams/stage5-stack.zh-Hans.png)
 
 每一层各自加上一种能力：
 - **API + SDK**：用程序访问 LLM
@@ -51,7 +51,7 @@
 
 > 📋 **这节是什么**：把 Claude Code 的 7 个 primitive（MCP / Skills / Plugins / Subagents / Hooks / Slash commands / CLI）对应到 **7 个架构层 + 3 个工程学 discipline**——进 5.1-5.6 之前先看一次，知道接下来在学什么层；学完回头看，就是 synthesis。**分层是教学选择，不是 absolute 真理**。
 
-![Claude Code 7-Layer Architecture Map](../resources/diagrams/claude-architecture-map.png)
+![Claude Code 7-Layer Architecture Map](../resources/diagrams/claude-architecture-map.zh-Hans.png)
 
 > 📊 **上图**：Claude Code 7 个架构层 + 3 个工程学 discipline 整合视图。
 
@@ -508,7 +508,7 @@ Plugin
 
 到这里为止你学了 MCP（工具层）/ Skills（行为层）/ Plugins（散布层）。**Subagents 是 orchestration 层**——让主 Claude session spawn 出有独立 context 的子 agent、跑特定任务、回报结果。
 
-![Subagent 的 4 个生命周期：从 .md 文件到执行结果](../resources/diagrams/subagent-4-stage-flow.png)
+![Subagent 的 4 个生命周期：从 .md 文件到执行结果](../resources/diagrams/subagent-4-stage-flow.zh-Hans.png)
 
 > 📊 **上图**：subagent 从**定义 → 发现 → 派遣 → 执行** 4 个阶段、看完这张再读下面细节最快。
 
@@ -609,7 +609,7 @@ Plugin
 
 很多人把 Subagent 跟 Skill 当同一件事——其实是**完全不同层的东西**：
 
-![Subagent vs Skill — 5 个关键差别](../resources/diagrams/subagent-vs-skill.png)
+![Subagent vs Skill — 5 个关键差别](../resources/diagrams/subagent-vs-skill.zh-Hans.png)
 
 | 维度 | Subagent（子 agent） | Skill（技能） |
 |---|---|---|

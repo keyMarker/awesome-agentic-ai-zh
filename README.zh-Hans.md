@@ -4,7 +4,7 @@
 
 <div align="center" markdown="1">
 
-![AI Agent 学习路径](resources/diagrams/banner.png)
+![AI Agent 学习路径](resources/diagrams/banner.zh-Hans.png)
 
 # awesome-agentic-ai-zh
 
@@ -72,7 +72,7 @@ cd awesome-agentic-ai-zh
 
 ## 🗺️ 学习地图（两条学习路径）
 
-![AI Agent 学习地图](resources/diagrams/learning-map.png)
+![AI Agent 学习地图](resources/diagrams/learning-map.zh-Hans.png)
 
 走完 **Stage 0-2（共用基础）** 之后，依你的目的选一条学习路径：
 
@@ -123,7 +123,7 @@ cd awesome-agentic-ai-zh
 
 走完主干（Track B 16-22 周 / Track A 8-10 周）后，依你的身份挑一条延伸路线继续走。**不确定挑哪条？**
 
-![Branch 决策树](resources/diagrams/branch-decision-tree.png)
+![Branch 决策树](resources/diagrams/branch-decision-tree.zh-Hans.png)
 
 > 💡 **“日常用户”这条路线不必走完主干就能直接读**——是给“想用 AI、但不一定要写 code”的人。
 

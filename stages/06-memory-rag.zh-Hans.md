@@ -46,7 +46,7 @@
 
 ### 在三层 stack 里的位置
 
-![Prompt → Context → Harness 三层工程 stack](../resources/diagrams/prompt-context-harness-stack.png)
+![Prompt → Context → Harness 三层工程 stack](../resources/diagrams/prompt-context-harness-stack.zh-Hans.png)
 
 完整对照见 [Stage 2](02-prompt-engineering.zh-Hans.md)。
 
@@ -582,7 +582,7 @@ print(chunks[0])
 
 **典型架构**（持久记忆完整版）：
 
-![Reflexion 持久 episodic memory loop](../resources/diagrams/reflexion-persistent-memory-loop.png)
+![Reflexion 持久 episodic memory loop](../resources/diagrams/reflexion-persistent-memory-loop.zh-Hans.png)
 
 → **与 Stage 3 反思的区别**: Stage 3 侧重于**单 session 内的 in-context 循环**（无外部存储），本节则探讨**跨 trial 的持久 episodic memory 存储 + 检索**（从过往经验中学习）。
 

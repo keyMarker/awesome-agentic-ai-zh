@@ -16,7 +16,7 @@
 
 ### 一张阶层图先建立认知
 
-![AI / ML / DL / LLM 与 Agent 的关系](../resources/diagrams/ai-ml-llm-agent-hierarchy.png)
+![AI / ML / DL / LLM 与 Agent 的关系](../resources/diagrams/ai-ml-llm-agent-hierarchy.zh-Hans.png)
 
 → **“Agent”不是“比 LLM 更厉害的模型”，也不是 LLM 树状分类底下的一个分支**。Agent 是个**跨层抽象的系统**，把 LLM 当作其中一个组件来用。Cursor / Claude Code / Hermes Agent 内部都还是同一批 LLM（Claude / GPT / Gemini）—— 差别是怎么把 LLM 包进工具调用循环里。
 
