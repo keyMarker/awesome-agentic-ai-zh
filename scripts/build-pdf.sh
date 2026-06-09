@@ -38,7 +38,7 @@ MAIN_FONT="${MAIN_FONT:-DejaVu Sans}"
 if [[ "$LANG_VARIANT" == "en" ]]; then
   SUFFIX=".en"
   TITLE="awesome-agentic-ai-zh — Learning Roadmap"
-  SUBTITLE="A 7-stage path from your first LLM call to multi-agent systems"
+  SUBTITLE="An 8-stage path from your first LLM call to multi-agent systems"
   OUT_PDF="$DIST_DIR/awesome-agentic-ai-zh.en.pdf"
 else
   SUFFIX=""

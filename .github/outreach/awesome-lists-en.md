@@ -28,7 +28,7 @@ Adding **awesome-agentic-ai-zh** to the [learning/tutorials] section.
 
 What it is: a staged learning roadmap for agentic AI (not a flat list) —
 8 stages LLM-basics → multi-agent + Computer/Browser Use, 2 tracks
-(use CLI agents vs build your own), 5 audience branches, 145+ curated
+(use CLI agents vs build your own), 5 audience branches, 240+ curated
 projects, runnable exercises. MIT.
 
 Why it fits this list: it's the "where do I start / in what order"
@@ -47,7 +47,7 @@ Rendered site: https://wenyuchiou.github.io/awesome-agentic-ai-zh/
 ## Suggested one-line list entry (match each list's existing format)
 
 ```
-- [awesome-agentic-ai-zh](https://github.com/WenyuChiou/awesome-agentic-ai-zh) — Trilingual staged roadmap: LLM basics → multi-agent, 8 stages + 2 tracks + 145+ curated projects. MIT.
+- [awesome-agentic-ai-zh](https://github.com/WenyuChiou/awesome-agentic-ai-zh) — Trilingual staged roadmap: LLM basics → multi-agent, 8 stages + 2 tracks + 240+ curated projects. MIT.
 ```
 
 ## Don'ts

@@ -16,8 +16,8 @@
 
 ```
 For folks asking "where do I start with agentic AI?" — built a trilingual
-7-stage learning roadmap (zh-TW · zh-Hans · en) covering Stage 0 (foundations)
-through Stage 7 (multi-agent production). 145+ curated projects with cost,
+8-stage learning roadmap (zh-TW · zh-Hans · en) covering Stage 0 (foundations)
+through Stage 8 (multi-agent production). 240+ curated projects with cost,
 audience, and time estimates per stage.
 
 ⭐ 525 in week 1 · MIT
@@ -26,7 +26,7 @@ audience, and time estimates per stage.
 
 ## Variant 2 — HF Community Post / Discuss (200-300 words)
 
-**Title**: Trilingual 7-stage learning roadmap for agentic AI (Stage 0 → multi-agent production)
+**Title**: Trilingual 8-stage learning roadmap for agentic AI (Stage 0 → multi-agent production)
 
 **Body**:
 
@@ -34,7 +34,7 @@ audience, and time estimates per stage.
 Hi HF community,
 
 I've been building [awesome-agentic-ai-zh](https://github.com/WenyuChiou/awesome-agentic-ai-zh)
-— a trilingual (zh-TW canonical · zh-Hans · English) 7-stage learning roadmap
+— a trilingual (zh-TW canonical · zh-Hans · English) 8-stage learning roadmap
 for agentic AI:
 
 - **Stage 0**: Foundations (Python, git, CLI, REST APIs)
@@ -43,8 +43,9 @@ for agentic AI:
 - **Stage 5**: Claude Code ecosystem (MCP, Skills, Plugins)
 - **Stage 6**: Multi-agent + memory + production hardening
 - **Stage 7**: Production deployment + observability
+- **Stage 8**: Agent Interfaces (Computer Use, Browser Use, Code Sandbox)
 
-Each stage has time estimates, prerequisites, hands-on exercises, and 145+
+Each stage has time estimates, prerequisites, hands-on exercises, and 240+
 curated projects across the catalog. The catalog includes MCP servers, Skills,
 and integrations grouped by 14 use-case categories — including a section
 specifically for the Chinese-language ecosystem (Coze, Qwen-Agent, LangChain
@@ -69,9 +70,9 @@ and HF model cards).
 ```
 Hi <name>,
 
-I built awesome-agentic-ai-zh, a trilingual (zh-TW / zh-Hans / en) 7-stage
+I built awesome-agentic-ai-zh, a trilingual (zh-TW / zh-Hans / en) 8-stage
 learning roadmap for agentic AI — covers foundations through multi-agent
-production with 145+ curated projects, cost/time estimates per stage. ★525
+production with 240+ curated projects, cost/time estimates per stage. ★525
 + 3,185 unique visitors in week 1.
 
 Stage 1 (LLM basics) and Stage 4 (frameworks) reference HF transformers
