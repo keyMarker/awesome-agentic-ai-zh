@@ -10,6 +10,7 @@ Thumbs.db
 # Local
 .env
 .cache/
+.venv/
 
 # Generated
 _build/
