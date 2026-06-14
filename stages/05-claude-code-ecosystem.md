@@ -224,6 +224,27 @@
 | [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | ⭐⭐⭐⭐ | 想看社群有什麼（slash commands / skills / hooks 範例）| 較廣泛的資源清單（目前正在重整）|
 | [KimYx0207/Claude-Code-x-OpenClaw-Guide-Zh](https://github.com/KimYx0207/Claude-Code-x-OpenClaw-Guide-Zh) | ⭐⭐⭐⭐ | 中文讀者要逐步教學 | 簡中入門導讀 |
 
+### Hooks（L3 控制層）⭐ 把規則寫成程式、自動攔截
+
+MCP / Skills 是「給 agent 更多能力」；**Hooks 則是反過來：在 agent 的生命週期事件上掛你自己的 script，做檢查、攔截、注入**。這是 Claude Code 的控制層（架構圖的 L3）。
+
+**怎麼運作**：在 `settings.json` 的 `hooks` 設定「某事件發生時跑哪個 command」。常用事件（2026 已擴到 ~28 個，先記核心幾個）：
+
+| 事件 | 觸發時機 | 典型用途 |
+|---|---|---|
+| `PreToolUse` | 工具呼叫前 | 擋危險指令、權限 gate |
+| `PostToolUse` | 工具呼叫後 | 自動 format / lint / 跑測試 |
+| `UserPromptSubmit` | 你送出 prompt 時 | 注入 context、擋掉某些輸入 |
+| `Stop` / `SubagentStop` | （子）agent 想停時 | 強制它繼續、或做收尾檢查 |
+| `SessionStart` / `SessionEnd` | session 開始 / 結束 | 載入狀態、寫 log |
+| `PreCompact` | context 壓縮前 | 保護重要內容 |
+
+**關鍵語意**：hook **回傳 exit code 2 = 阻擋**：Claude 會把 stderr 當錯誤訊息讀回去（例如 `PreToolUse` 回 2 就擋下那個工具呼叫、`UserPromptSubmit` 回 2 就擋下 prompt）。這就是「用程式強制規則」的機制。
+
+> ⚠️ **安全**：hook 是在你機器上跑的 shell command，別亂裝別人的 hook，也別在 hook 裡跑未經檢查的輸入。
+>
+> 完整事件清單 + JSON 進階用法見官方文件：[Claude Code Hooks](https://code.claude.com/docs/en/hooks)。
+
 ---
 
 ## 5.2 — MCP（Model Context Protocol）⭐ 基礎

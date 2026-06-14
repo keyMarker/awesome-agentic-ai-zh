@@ -224,6 +224,27 @@ For a complete list, see the official [Slash Commands documentation](https://doc
 | [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | ⭐⭐⭐⭐ | Seeing what the community has to offer (slash command / skill / hook examples) | A broader list of resources (currently being reorganized). |
 | [KimYx0207/Claude-Code-x-OpenClaw-Guide-Zh](https://github.com/KimYx0207/Claude-Code-x-OpenClaw-Guide-Zh) | ⭐⭐⭐⭐ | Chinese readers who want a step-by-step tutorial | A beginner's guide in Simplified Chinese. |
 
+### Hooks (the L3 control layer) ⭐ turn rules into code that auto-intercepts
+
+MCP / Skills give the agent *more* abilities; **Hooks are the reverse: you attach your own scripts to lifecycle events to check, block, or inject**. This is Claude Code's control layer (L3 in the architecture map).
+
+**How it works**: in `settings.json`'s `hooks`, you say "when event X fires, run command Y". Common events (the 2026 list has grown to ~28; learn the core few first):
+
+| Event | Fires | Typical use |
+|---|---|---|
+| `PreToolUse` | before a tool call | block dangerous commands, permission gate |
+| `PostToolUse` | after a tool call | auto-format / lint / run tests |
+| `UserPromptSubmit` | when you submit a prompt | inject context, reject some inputs |
+| `Stop` / `SubagentStop` | when a (sub)agent tries to stop | force it to continue, or run a final check |
+| `SessionStart` / `SessionEnd` | session start / end | load state, write logs |
+| `PreCompact` | before context compaction | protect important content |
+
+**Key semantics**: a hook **returning exit code 2 = block**: Claude reads stderr back as an error (e.g. `PreToolUse` exit 2 blocks that tool call; `UserPromptSubmit` exit 2 blocks the prompt). That is the "enforce rules in code" mechanism.
+
+> ⚠️ **Security**: a hook is a shell command running on your machine, so don't install others' hooks blindly, and don't run unchecked input inside one.
+>
+> Full event list + advanced JSON usage: [Claude Code Hooks](https://code.claude.com/docs/en/hooks).
+
 ---
 
 ## 5.2 — MCP (Model Context Protocol) ⭐ Foundation
