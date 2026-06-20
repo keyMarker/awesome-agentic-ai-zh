@@ -1,0 +1,12 @@
+app_name: agentic-learning
+author: Peng Zhang
+description: A framework for agentic learning in AI systems.
+settings:
+  debug: false
+  max_retries: 3
+  model:
+    max_tokens: 2048
+    name: Sonnet 4.6
+    temperature: 0.7
+  timeout: 30
+version: 0.1.0
