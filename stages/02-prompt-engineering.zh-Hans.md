@@ -336,6 +336,8 @@ def ask(prompt: str) -> str:
 
 </details>
 
+> 🧠 **什么时候别自己写 CoT**：对 **reasoning-native 模型**（Claude Opus 4.x、o 系列、Gemini thinking 等内置思考的模型），用它们的 extended thinking 通常比你手写“Let's think step by step”更好；硬塞步骤反而可能干扰它本来的推理。手写 CoT 仍适用于不具内置推理的一般 chat model。
+
 ### 练习 4：Iterative Refinement
 拿一个模糊的 prompt，refine 5 次。把每一轮记下来。观察哪些改动会提升质量。
 
@@ -455,7 +457,7 @@ LLM-powered system 的工程实践可以拆成 **3 层 stack**。这不是 1 次
 延伸阅读（不必修、未来想深挖时看）：
 
 - [`Meirtz/Awesome-Context-Engineering`](https://github.com/Meirtz/Awesome-Context-Engineering)（★ 3k+）——从 prompt engineering 一路推到 production agent 的 survey
-- [`Windy3f3f3f3f/how-claude-code-works`](https://github.com/Windy3f3f3f3f/how-claude-code-works)（★ 2.4k+）——Claude Code 内部解析，含 context engineering 章节
+- [`Windy3f3f3f3f/how-claude-code-works`](https://github.com/Windy3f3f3f3f/how-claude-code-works)（★ 2.6k+）——Claude Code 内部解析，含 context engineering 章节
 
 ## ✅ 进 Stage 3 前的自我检查
 

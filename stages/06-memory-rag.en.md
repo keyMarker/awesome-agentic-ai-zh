@@ -155,6 +155,8 @@ These are the minimal structural elements. **The 3 most common pitfalls**:
 
 > 📚 **For more RAG pitfalls and solutions**: [NirDiamant/RAG_Techniques](https://github.com/NirDiamant/RAG_Techniques) ★ Large Production RAG Cookbook, includes 30+ techniques + Jupyter notebook examples.
 
+> 📄 **The two places RAG actually breaks (don't only tune chunking)**: (1) **parsing / ingest**: PDF → clean markdown is where garbage-in starts: [docling-project/docling](https://github.com/docling-project/docling) (★61k, MIT), [opendatalab/MinerU](https://github.com/opendatalab/MinerU) (strong on Chinese / scientific PDFs; **AGPL**, mind the license), [microsoft/markitdown](https://github.com/microsoft/markitdown) (★150k+, MIT). (2) **picking an embedding model**: your first retrieval-quality decision: check the [MTEB leaderboard](https://huggingface.co/spaces/mteb/leaderboard); for Chinese / multilingual, [BGE-M3](https://github.com/FlagOpen/FlagEmbedding) (★12k, MIT) is a common pick.
+
 After implementing the basic skeleton, complete Exercises 1-4 (Embeddings / Vector DB / Chunking / Full Pipeline) to gain practical experience, then move to the next section on Advanced RAG Techniques.
 
 ## 🚀 Advanced RAG Techniques (Read After Basic RAG)
@@ -444,6 +446,7 @@ After learning the three patterns, you do not need to build a memory store from 
 | [**mem0**](https://github.com/mem0ai/mem0) | 55.6k★ | Apache-2.0 | **Chatbot / personal-assistant user-level memory** | Auto fact extraction + forgetting + namespace, production-tested, largest community |
 | [**Letta**](https://github.com/letta-ai/letta) (formerly MemGPT) | 22.7k★ | Apache-2.0 | **Long-session agents** (measured in months) | OS-style paging memory (working + archival), persona stability, MemGPT paper lineage |
 | [**Zep**](https://github.com/getzep/zep) | 4.6k★ | Apache-2.0 | **Temporal KG-based memory** | Builds conversation history into a temporal KG for time-aware reasoning and audit trails |
+| [**graphiti**](https://github.com/getzep/graphiti) | 27.5k★ | Apache-2.0 | **Real-time knowledge-graph agent memory** | Turns an agent's past interactions into a time-aware knowledge graph it can look things up in; the engine behind Zep, usable on its own |
 | [**LangMem**](https://github.com/langchain-ai/langmem) | 1.4k★ | MIT | **LangChain-native memory** | Official LangChain memory library, integrates directly with LangGraph, useful when you are already committed to the LangChain stack |
 
 **How to choose**:
@@ -596,7 +599,7 @@ print(chunks[0])
 > 💡 **Delineation with Stage 3 Reflection**:
 > - To understand "how the reflection loop works and runs in a single turn" → Stage 3 Reflection.
 > - To understand "how reflections accumulate across sessions and agents learn from past lessons" → This section.
-> - To see how reflection is used in production agents (Cursor / Claude Code) → [Stage 5 5.6 Harness Internals](05-claude-code-ecosystem.md#56--claude-code-source-解剖reference-harness-implementation-track-b-必看).
+> - To see how reflection is used in production agents (Cursor / Claude Code) → [Stage 5 5.7 Harness Internals](05-claude-code-ecosystem.md#57--claude-code-source-解剖reference-harness-implementation-track-b-必看).
 
 ## 🤔 Advanced Reasoning / Reflection — 2024-2026 Trends ⭐ Covers Both Tracks
 
@@ -618,13 +621,13 @@ Reflexion is **prompt-based reflection**—LLMs modify themselves during inferen
 
 > 📺 **Visual Learning**: [Hung-Yi Lee 2025 Lecture 7 — How Large Language Models Like DeepSeek-R1 Perform "Deep Thinking" (Reasoning)](https://www.youtube.com/watch?v=bJFtcwLSNxI) (NTU Machine Learning in the Era of Generative AI 2025)
 
-OpenAI's **o1** (Sep 2024), followed by open-source efforts like DeepSeek's **R1** (Jan 2025), **DeepSeek-V4-Pro** (Apr 2026 preview, agent-focused open-source reasoning), Claude Fable 5 (Jun 2026, Mythos-class, Claude's current highest-capability widely-available tier, positioned above the Opus class), Claude Opus 4.8 (May 2026, Opus-class flagship + Fable 5's safeguard fallback, Dynamic Workflows + parallel subagents), GPT-5.5 (Apr 2026), and Gemini 3.1 Pro (Feb 2026) represent the current frontier. These models have "step-by-step thinking + self-correction" **trained directly into their weights**, automatically unfolding long reasoning chains (thinking tokens) during inference. **This is the biggest paradigm shift in LLMs from 2024-2026**, with all frontier models adopting this approach. The table below lists **current (Jun 2026) frontiers**—historical predecessors (o1 / R1 / Sonnet 4.5 / Gemini 2.5) are omitted; refer to release dates for lineage.
+OpenAI's **o1** (Sep 2024), followed by open-source efforts like DeepSeek's **R1** (Jan 2025), **DeepSeek-V4-Pro** (Apr 2026 preview, agent-focused open-source reasoning), Claude Fable 5 (Jun 2026, Mythos-class, above the Opus class; access suspended 2026-06-12, currently unavailable), Claude Opus 4.8 (May 2026, Opus-class flagship and current top usable tier, Dynamic Workflows + parallel subagents), GPT-5.5 (Apr 2026), and Gemini 3.1 Pro (Feb 2026) represent the current frontier. These models have "step-by-step thinking + self-correction" **trained directly into their weights**, automatically unfolding long reasoning chains (thinking tokens) during inference. **This is the biggest paradigm shift in LLMs from 2024-2026**, with all frontier models adopting this approach. The table below lists **current (Jun 2026) frontiers**—historical predecessors (o1 / R1 / Sonnet 4.5 / Gemini 2.5) are omitted; refer to release dates for lineage.
 
 | Model | Source / Release | Features | Link |
 |---|---|---|---|
 | **GPT-5.5** | OpenAI 2026-04 (Predecessors: o1 2024-09 → o3 → GPT-5 2025-08 → 5.4 2026-03) | Closed-source, unified reasoning + chat, Thinking budget API, enhanced agent capabilities | [OpenAI](https://openai.com/) |
-| **Claude Fable 5** | Anthropic 2026-06 (Mythos-class, positioned above the Opus class; released alongside Claude Mythos 5, a limited-availability variant with some safeguards lifted) | Closed-source, Claude's current highest-capability widely-available tier; sensitive queries (cybersecurity / bio-chem / distillation) fall back to Opus 4.8; official benchmark numbers not yet published | [Claude Fable 5 / Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) |
-| **Claude Opus 4.8** | Anthropic 2026-05 (Predecessors: Sonnet 4.5 / Opus 4.5 / Opus 4.7; Dynamic Workflows research preview) | Closed-source, Opus-class flagship + Fable 5's safeguard fallback, controllable thinking budget (API parameter), **leading in SWE-bench / Terminal-bench** | [Anthropic extended thinking](https://docs.claude.com/en/docs/build-with-claude/extended-thinking) |
+| **Claude Fable 5** | Anthropic 2026-06 (Mythos-class, positioned above the Opus class; released alongside Claude Mythos 5, a limited-availability variant with some safeguards lifted) | Closed-source, Mythos-class (above the Opus class). ⚠️ **Access suspended 2026-06-12 by a US export-control directive ([status](https://status.claude.com/)); Fable 5 and Mythos 5 are currently unavailable with no restoration timeline; use Opus 4.8.** Official benchmark numbers were never published | [Claude Fable 5 / Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) |
+| **Claude Opus 4.8** | Anthropic 2026-05 (Predecessors: Sonnet 4.5 / Opus 4.5 / Opus 4.7; Dynamic Workflows research preview) | Closed-source, Opus-class flagship and current top usable Claude tier (was Fable 5's safeguard fallback; Fable 5 suspended 2026-06-12), controllable thinking budget (API parameter), **leading in SWE-bench / Terminal-bench** | [Anthropic extended thinking](https://docs.claude.com/en/docs/build-with-claude/extended-thinking) |
 | **Gemini 3.1 Pro** | Google 2026-02 (Predecessors: Gemini 2.5 Thinking 2025, Gemini 3 2025-11) | Closed-source, viewable thinking traces, **GPQA Diamond 94.3%**, leading in price/speed/multimodality | [Gemini API](https://ai.google.dev/gemini-api/docs/thinking) |
 | **DeepSeek-V4 / V4-Pro / V4-Flash** | DeepSeek 2026-04 preview (Predecessors: R1 2025-01 → V3.1) | Open-source **MIT license**, agent-focused training, integrated reasoning + tool use + knowledge processing. R series reasoning now mainline. | [HF DeepSeek-V4-Pro](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro), [R1 paper (method baseline)](https://arxiv.org/abs/2501.12948), [CNBC report](https://www.cnbc.com/2026/04/24/deepseek-v4-llm-preview-open-source-ai-competition-china.html) |
 | **QwQ-32B / QvQ-72B** | Alibaba Qwen 2024-11 ~ 2026 | Open-source **Apache 2.0**, QwQ-32B remains a strong option for small-size reasoning, QvQ is the visual variant. | [QwQ blog](https://qwenlm.github.io/blog/qwq-32b-preview/) |
@@ -634,7 +637,7 @@ OpenAI's **o1** (Sep 2024), followed by open-source efforts like DeepSeek's **R1
 | Your Situation | Recommendation |
 |---|---|
 | Using a general chat model base and want to add reasoning | Path 1 (Prompt-based) — ToT / Self-Consistency / CoVe |
-| Budget/latency allows for strongest reasoning | Path 2 — Choose among **Claude Fable 5 / GPT-5.5 / Opus 4.8 / Gemini 3.1 Pro / V4-Pro** |
+| Budget/latency allows for strongest reasoning | Path 2 — Choose among **GPT-5.5 / Opus 4.8 / Gemini 3.1 Pro / V4-Pro** (Claude Fable 5 suspended as of 2026-06-12) |
 | Want to fine-tune your own reasoning model | Path 2 — Study the R1 paper (method baseline), start from R1-Distill / V4 open-source weights |
 | On-device / Extremely tight budget | **QwQ-32B** (Apache 2.0) or R series distilled versions |
 | Multi-agent debate / critic scenarios | Path 1 (CRITIC / debate) + [Stage 7 Multi-agent](07-multi-agent-production.md) |
@@ -721,6 +724,7 @@ Categorized for quick reference; **choose by use case ("Entry Point") and follow
 | **Vector DB**<br>(Production Scale) | [Qdrant](https://github.com/qdrant/qdrant) | ⭐⭐⭐⭐⭐ | When Chroma can't keep up, need production scale | Rust-based vector DB, offers cloud and self-hosted options. ★ 31k+ |
 | **Vector DB**<br>(Hybrid) | [Weaviate](https://github.com/weaviate/weaviate) | ⭐⭐⭐⭐ | Production deployment + schema constraints | Built-in modules (text2vec/generative/classification), schema-driven, native BM25 + vector hybrid. ★ 16k+ |
 | **Vector DB**<br>(Existing Postgres) | [pgvector](https://github.com/pgvector/pgvector) | ⭐⭐⭐⭐ | Teams already using Postgres | Postgres extension, unified SQL + vector in one DB, simplest ops. ★ 21k+ |
+| **Vector DB**<br>(Runs in-app) | [lancedb/lancedb](https://github.com/lancedb/lancedb) | ⭐⭐⭐⭐ | Apps that want a vector DB built in, with no separate server | A vector DB that runs inside your app (no server to start); handles text + images, and searches by keyword + vector together. ★ 10k+, Apache-2.0. |
 | **Memory Framework**<br>(Auto Fact Extraction) | [mem0ai/mem0](https://github.com/mem0ai/mem0) | ⭐⭐⭐⭐⭐ | Personal assistants / chatbots needing user-level memory | Self-refining memory layer, cross-session fact storage. ★ 54k+ |
 | **Memory Framework**<br>(OS-Paging) | [Letta (formerly MemGPT)](https://github.com/letta-ai/letta) | ⭐⭐⭐⭐ | Agents running for extended periods (months) | Hierarchical memory (working/archival), OS-paging concept. ★ 22k+ |
 | **Memory (In-Framework)** | [LangChain — Memory](https://python.langchain.com/docs/concepts/memory/) | ⭐⭐⭐ | Already using LangChain | 4 abstract memory types (buffer/summary/vectorstore-backed/entity). |

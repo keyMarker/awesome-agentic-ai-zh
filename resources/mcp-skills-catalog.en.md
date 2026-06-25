@@ -2,7 +2,7 @@
 
 > [繁體中文](./mcp-skills-catalog.md) | [简体中文](./mcp-skills-catalog.zh-Hans.md) | **English**
 
-> Connect Claude Code (or any other CLI agent) to the apps you already use, without window-hopping. This page is a curated index of 62 MCP servers / Claude Skills / integrations grouped by use case (incl. research-workflow + multi-LLM-delegation dedicated sections).
+> Connect Claude Code (or any other CLI agent) to the apps you already use, without window-hopping. This page is a curated index of 65+ MCP servers / Claude Skills / integrations grouped by use case (incl. research-workflow + multi-LLM-delegation dedicated sections).
 
 ---
 
@@ -25,17 +25,18 @@
 2. [Office Documents (Word / Excel / PowerPoint / PDF)](#2-office-documents-word--excel--powerpoint--pdf) (7)
 3. [Google Workspace](#3-google-workspace) (2)
 4. [Microsoft 365](#4-microsoft-365) (3)
-5. [Dev Collaboration (GitHub / Atlassian / Slack…)](#5-dev-collaboration-github--atlassian--slack) (6)
-6. [Databases](#6-databases) (7)
+5. [Dev Collaboration (GitHub / Atlassian / Slack…)](#5-dev-collaboration-github--atlassian--slack) (9)
+6. [Databases](#6-databases) (8)
 7. [Browser Automation / Web Scraping](#7-browser-automation--web-scraping) (4)
 8. [Design (Figma / Excalidraw)](#8-design-figma--excalidraw) (3)
 9. [Monitoring / Observability](#9-monitoring--observability) (3)
 10. [Media / Streaming (YouTube / Spotify)](#10-media--streaming-youtube--spotify) (3)
 11. [Chinese-language Ecosystem](#11-chinese-language-ecosystem) (9)
-12. [Other Common (Cloudflare / Stripe…)](#12-other-common-cloudflare--stripe) (3)
+12. [Other Common (Cloudflare / Stripe…)](#12-other-common-cloudflare--stripe) (4)
 13. [Research Workflow Skills](#13-research-workflow-skills-academic--paper--lit) (4)
 14. [Multi-LLM Delegation Skills](#14-multi-llm-delegation-skills) (3)
 15. [Finance / Trading Agents](#15-finance--trading-agents) (2)
+16. [Web Search / Retrieval](#16-web-search--retrieval) (2)
 
 ---
 
@@ -369,6 +370,30 @@
 **Audience**: engineers / researchers analyzing large codebases, tracking cross-file references, or asking questions across "app code + DB schema + infra" together.
 **Notes**: cross-cutting tool — fits both dev collaboration (understanding existing codebases) and research workflow (turning any artifact into a graph). When stuck on a big codebase, use graphify to extract structure, then feed it back to Claude for reasoning.
 
+### [upstash/context7](https://github.com/upstash/context7) ⭐⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 57k |
+| License | MIT |
+| Rating | ⭐⭐⭐⭐⭐ (must-have for coding) |
+
+**What it does**: pulls up-to-date library / framework docs into the agent's context so it stops hallucinating outdated APIs — one of the most-installed coding MCPs.
+**Audience**: developers who hit "the LLM wrote code against a stale version of this library" — Context7 feeds the agent current docs on demand.
+**Notes**: among the highest-starred coding MCPs; reach for it whenever the agent's library knowledge lags the version you're actually on.
+
+### [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) ⭐⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 13.5k+ |
+| License | MIT |
+| Rating | ⭐⭐⭐⭐⭐ (code intelligence) |
+
+**What it does**: indexes a codebase into a queryable knowledge graph, so a coding agent can ask about structure / symbols / call paths instead of repeatedly grepping and reading files. Single static binary, 158 languages.
+**Audience**: people running coding agents on large or unfamiliar repos who want fast orientation and lower token use.
+**Notes**: re-index after big edits, since the graph can go stale; treat its answers as a fast first pass and verify load-bearing claims (who-calls-X / is-this-dead) against the actual code.
+
 ---
 
 ## 6. Databases
@@ -457,6 +482,18 @@
 **Audience**: people using Redis as cache / vector DB / queue.
 **Notes**: officially maintained; includes vector search.
 
+### [awslabs/mcp](https://github.com/awslabs/mcp) ⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 9.3k+ |
+| License | Apache-2.0 |
+| Rating | ⭐⭐⭐⭐ (**AWS official**) |
+
+**What it does**: AWS's first-party MCP servers (Lambda / S3 / DynamoDB / CloudWatch / Cost Explorer and more).
+**Audience**: teams on AWS who want agents to query / operate their cloud.
+**Notes**: officially maintained by AWS; uses your existing AWS login (CLI profiles / IAM roles), no separate token to manage.
+
 ---
 
 ## 7. Browser Automation / Web Scraping
@@ -465,7 +502,7 @@
 
 | Field | Value |
 |---|---|
-| Stars | ★ 32k+ |
+| Stars | ★ 34k+ |
 | License | Apache-2.0 |
 | Rating | ⭐⭐⭐⭐⭐ (**Microsoft official**) |
 
@@ -818,6 +855,18 @@
 **Audience**: people doing personal finance analysis in Claude Code / Claude Desktop who want AI to surface passive income opportunities. Good hands-on example of a hosted remote MCP server — plug the URL in, zero install, useful for Stage 5 learners exploring the hosted vs self-hosted difference.
 **Notes**: Live endpoint `https://api.intuitek.ai/yield/mcp` (no auth, no API key required). x402 micropayment $1 USDC/call on Base (agent-to-agent scenarios); free for regular users. Analysis-only, no trading. GitHub: [thebrierfox/intuitek-ace](https://github.com/thebrierfox/intuitek-ace) (MIT License).
 
+### [ComposioHQ/composio](https://github.com/ComposioHQ/composio) ⭐⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 28.8k+ |
+| License | MIT |
+| Rating | ⭐⭐⭐⭐⭐ (1000+ tool-integration hub) |
+
+**What it does**: a platform (SDKs + MCP servers) that connects agents to 1000+ apps (Slack / GitHub / Gmail / Salesforce / Notion…) and handles the logins for you, so you don't build a separate connector for each one.
+**Audience**: teams whose agents need broad API coverage without maintaining dozens of separate MCP servers.
+**Notes**: provides MCP servers + Python / TypeScript SDKs; connect to Claude Code via MCP. A "tool aggregator" (compare with n8n / Zapier for automation).
+
 ---
 
 ## 13. Research Workflow Skills (academic / paper / lit)
@@ -955,6 +1004,34 @@ Claude is bad at token-heavy mechanical work (cost, context blowout); Codex is b
 **What it does**: a multi-role AI hedge-fund simulation where bull / bear / fundamentals / technicals / risk agents collaborate to produce trade recommendations.
 **Audience**: Stage 7 multi-agent learners wanting a complete application example; people interested in the agent × finance crossover.
 **Notes**: NO-LICENSE → same caveat as above. **Simulation only — not investment advice.**
+
+---
+
+## 16. Web Search / Retrieval
+
+### [exa-labs/exa-mcp-server](https://github.com/exa-labs/exa-mcp-server) ⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 4.5k+ |
+| License | MIT |
+| Rating | ⭐⭐⭐⭐ (**Exa official**) |
+
+**What it does**: Exa's official MCP — LLM / agent-oriented web search (neural + keyword) that returns clean results to feed straight into prompts.
+**Audience**: people doing research / fact-check / online RAG retrieval — semantic search shines for "concept-related" queries, less so for pure keyword lookups.
+**Notes**: requires an Exa API key.
+
+### [tavily-ai/tavily-mcp](https://github.com/tavily-ai/tavily-mcp) ⭐⭐⭐⭐
+
+| Field | Value |
+|---|---|
+| Stars | ★ 2.1k+ |
+| License | MIT |
+| Rating | ⭐⭐⭐⭐ (beginner-friendly web search) |
+
+**What it does**: Tavily's search API as an MCP — web search built for LLMs / RAG, returning an answer plus its sources.
+**Audience**: a beginner who just wants the agent to search the web — good first pick thanks to an easy free tier.
+**Notes**: free tier available; returns both a synthesized answer and the underlying sources.
 
 ---
 

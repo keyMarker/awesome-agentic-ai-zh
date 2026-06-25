@@ -6,6 +6,30 @@ Format: `YYYY-MM-DD · category · 1-line summary (commit-sha)`.
 
 ---
 
+## 2026-06-24
+
+- **catalog** · Added DeusData/codebase-memory-mcp (★ 13.5k, MIT) to §5 Dev Collaboration — a code-intelligence MCP that indexes a codebase into a queryable knowledge graph (query structure / symbols / call paths instead of grep+read). Plain, non-marketing description (notes the re-index-after-edits + verify-load-bearing-claims caveats); tri-locale; §5 TOC count 7→9 (also corrects a pre-existing off-by-one); gates pass.
+
+## 2026-06-13
+
+- **catalog** · Added 12 high-confidence repos (all gh-verified stars/license, none previously listed): microsoft/agent-framework (Stage 4); getzep/graphiti + lancedb/lancedb (Stage 6); comet-ml/opik, pydantic/logfire, NVIDIA-NeMo/Guardrails, BoundaryML/baml (Stage 7, incl. new Safety/Guardrails + Structured-Output rows); bytedance/UI-TARS-desktop + trycua/cua (Stage 8, new Computer Use Agent Stack); awslabs/mcp + ComposioHQ/composio (MCP/Skills catalog §6 / §12); microsoft/mcp-for-beginners (Stage 5.2 reading list). Tri-locale; per-section counts updated; anchor / zh-Hans / switcher gates pass.
+- **content** · Stage 5 — plain-language orientation box in 5.1 (Claude Code = terminal agent for devs; Claude Cowork = desktop agent for non-coders; OpenAI parallels = Codex CLI / ChatGPT agent) so beginners see Claude Code is one *shape* among several; plus first-use plain glosses for heavy terms (harness / orchestration / scaffolding / control plane). Tri-locale; Cowork + ChatGPT agent verified first-party; anchor / zh-Hans / switcher gates pass.
+- **content** · Reframed Claude Fable 5 across the roadmap after Anthropic suspended all access to Fable 5 + Mythos 5 on 2026-06-12 (US government export-control directive; [status](https://status.claude.com/) · [statement](https://www.anthropic.com/news/fable-mythos-access); no restoration timeline). Documentation tables (`CLAUDE.md` / `examples/` / stages 01·06·07·07.5·08 / glossary) now mark Fable 5 as suspended and currently unavailable, with Opus 4.8 as the current top usable Claude tier; recommendation pick-lists (Path-2 reasoning chooser, Computer Use vendor table, OmniParser / browser-use swap-lists) drop Fable 5 so no reader is pointed at an inaccessible model. Tri-locale; anchor / zh-Hans-localize / language-switcher gates all pass. Suspension verified against two first-party sources, no fabricated facts.
+- **docs** · `CITATION.cff` version `2026.05.19` → `2026.06.13` (was stale vs the recent content batches).
+
+## 2026-06-12
+
+- **content** · Claude Fable 5 (Mythos-class, `claude-fable-5`, GA 2026-06-09) added as the new top Claude tier across the trilingual roadmap — model tables in `CLAUDE.md` / `examples/` / stages 01·06·07·07.5·08 + glossary frontier entry; Opus 4.8 reframed as Opus-class flagship + Fable 5 safeguard-fallback. No fabricated context-window or benchmark numbers (Anthropic published none — marked "not yet published"). Also fixed a pre-existing `claude-opus-4-7` → `claude-opus-4-8` inconsistency (`12980b3`).
+- **content** · Stage 5 — new **5.6 Dynamic Workflows** section after 5.5 Subagents (ecosystem-level intro + cross-link to the 7.5 deep-dive, no duplication); old 5.6 Source → 5.7, old 5.7 SDK → 5.8, all in-file refs + 7-Layer-map ranges + cross-file anchors (glossary / stages 03·06·07) relinked, tri-locale (`5044008`).
+- **catalog** · `1weiho/open-slide` (★4.9k, MIT) added to §2 as an agent-native slide framework — ships Claude Code Skills, distinct from Stage 4 orchestration frameworks; tri-locale (`7d3fd5d`).
+- **docs** · MCP/Skills catalog count made drift-proof — stale `62` → robust `65+`, category count reconciled to 15, across 33 files / all locales (`3782dd4`). Propagated the 7→8 stage reality into design notes / style-guide / reader docs (`39d397a`) and fixed outreach-draft count drift (`25785f0`).
+- **outreach** · send-day copy-paste packages playbook for awesome-list submissions (`afd7a76`).
+- **content** · per-chapter improvement audit (12-agent fan-out + skeptical filter) → 5 gap-fills, all tri-locale: Stage 3 lethal-trifecta security callout + MCP router note + glossary (`f3bde60`); Stage 1 next-token / sampling mental-model box (`1bd171f`); Stage 5 Hooks (L3 control layer) subsection (`9d2897f`); Stage 7 Loop Engineering note + glossary (`eb8e64c`).
+- **catalog** · new Web Search / Retrieval category (exa-mcp + tavily-mcp) + Context7 in Dev-Collaboration; category count 15→16 (`b1718d3`).
+- **content** · improvement-audit medium batch (6 more tri-locale gap-fills): Stage 3 structured outputs / JSON-mode (`93006a8`); Stage 2 reasoning-vs-CoT + Stage 5 MCP-in-2026 (Registry / FastMCP / security) + Stage 8 accessibility-tree & Playwright-MCP (`ea0633e`); Stage 6 RAG ingest-parsing + embedding-model selection + Stage 7 OTel GenAI conventions / pass^k·τ²-bench / MAST (`2fcfc6b`).
+
+---
+
 ## 2026-05-31
 
 - **tooling** · pruned the ops-metric scripts that don't touch stars or URL validity (strategic-review action #1, scoped down per maintainer): removed `scripts/snapshot-traffic.py` (GitHub traffic snapshots), `scripts/refresh-outreach-status.py` (outreach-matrix drift), `scripts/check-catalog-staleness.py` (dormant-entry pinger), and the `docs/traffic/` snapshot dir. **KEPT** the weekly stars + URL auto-update (`weekly-catalog-refresh.yml` + `lint.yml`'s `star-drift` job) — the maintainer values the weekly cadence for star-count refresh and link-rot checking. All correctness + trilingual-parity guards intact (anchor / link-rot / mirror-sync / stage-template / banned-words / overclaim / zh-Hans-localize).

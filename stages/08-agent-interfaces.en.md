@@ -83,7 +83,7 @@ If you don't meet these, go back and catch up.
 ## 📚 Required Reading
 
 1. [**Anthropic — Introducing Computer Use**](https://www.anthropic.com/news/3-5-models-and-computer-use) — The original launch announcement for Computer Use. A must-read to understand how it works.
-2. [**Anthropic — Claude Opus 4.8 Release Notes**](https://docs.anthropic.com/en/release-notes/overview) — Opus 4.8 (May 2026) introduces Dynamic Workflows + parallel subagent harness, and remains the Opus-class flagship. **On 2026-06-09 Anthropic also released Claude Fable 5 (`claude-fable-5`), the safeguarded, widely-available member of the new Mythos-class tier positioned above the Opus class.** The same-day Claude Mythos 5 (`claude-mythos-5`) is a limited-availability variant with some safeguards lifted; sensitive queries (cybersecurity, biology/chemistry, distillation) fall back to Opus 4.8.
+2. [**Anthropic — Claude Opus 4.8 Release Notes**](https://docs.anthropic.com/en/release-notes/overview) — Opus 4.8 (May 2026) introduces Dynamic Workflows + parallel subagent harness, and remains the Opus-class flagship and current top usable tier. On 2026-06-09 Anthropic released Claude Fable 5 (`claude-fable-5`) and Claude Mythos 5 (`claude-mythos-5`), the Mythos-class tier above the Opus class. ⚠️ **On 2026-06-12 a US export-control directive suspended all access to both ([status](https://status.claude.com/) · [statement](https://www.anthropic.com/news/fable-mythos-access)); they are currently unavailable with no restoration timeline.**
 3. [**OpenAI — The next evolution of the Agents SDK**](https://openai.com/index/the-next-evolution-of-the-agents-sdk/) ⭐ **April 2026** — A milestone for architecturally sound production coding agents, with a built-in sandbox and harness abstractions.
 4. [**OpenAI — Computer-Using Agent (CUA)**](https://openai.com/index/computer-using-agent/) — OpenAI's version of Computer Use, with WebArena/OSWorld numbers.
 5. [**browser-use docs**](https://docs.browser-use.com/) — The #1 open-source web agent (86k+ stars), get started with 5 lines of Python.
@@ -124,7 +124,7 @@ Agent receives a task
 
 | Vendor | Product | 2026 Status | OSWorld | Strengths |
 |---|---|---|---|---|
-| **Anthropic** | [Claude Fable 5 (2026-06-09, Mythos-class) / Opus 4.8 / Sonnet 4.6 Computer Use](https://www.anthropic.com/news/3-5-models-and-computer-use) | GA, cross-platform on macOS/Linux/Windows (Docker) | **72.7%** (Opus 4.6 baseline, near human-level 72.36%; specific Computer Use numbers for Opus 4.7 / 4.8 and Fable 5 not yet public) | Reasoning + code agent, home turf for Stages 5/7; Fable 5 is the highest-capability, widely-available tier with Opus 4.8 as its safeguard fallback |
+| **Anthropic** | [Opus 4.8 / Sonnet 4.6 Computer Use](https://www.anthropic.com/news/3-5-models-and-computer-use) | GA, cross-platform on macOS/Linux/Windows (Docker) | **72.7%** (Opus 4.6 baseline, near human-level 72.36%; Computer Use numbers for Opus 4.7 / 4.8 not yet public) | Reasoning + code agent, home turf for Stages 5/7. Opus 4.8 is the current top usable tier; the Mythos-class Fable 5 (2026-06-09) had access suspended 2026-06-12 and is currently unavailable |
 | **OpenAI** | [Codex desktop](https://openai.com/index/codex-for-almost-everything/) (April 2026)| GA, **background mode** doesn't hog the cursor, in-app browser, 90+ plugins | CUA 38.1% | Merged with ChatGPT + Atlas to become a **Desktop Superapp** |
 | **OpenAI** | [Computer-Using Agent (CUA)](https://openai.com/index/computer-using-agent/) | API | 38.1% / WebArena 58.1% | API-first, can be integrated into your own stack |
 | **Google** | [Gemini in Chrome](https://gemini.google/overview/gemini-in-chrome/) (Gemini 3) | GA + Android | — | **Auto Browse** + **Chrome Skills**, Chrome Enterprise Premium $6/user/month |
@@ -181,6 +181,8 @@ Agent receives a task
 
 **Conclusion — The production browser agent pattern**: **DOM-first with a screenshot fallback**. First try the DOM, and if that fails, use vision. `browser-use`, Atlas, and Comet all use this pattern.
 
+> 🌐 **A third browser modality: the accessibility tree**: beyond DOM-aware and screen-pixel (screenshot + click coordinates), the 2026 production mainstream reads the **accessibility tree**: more stable than pixels, far fewer tokens than raw DOM. To wire one up, [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp) (★34k, Apache-2.0, accessibility-tree-based) is the browser MCP a Track A user can attach to Claude Code today.
+
 ### Mini-Glossary (In-Place Explanations)
 
 | Term | Explanation |
@@ -208,7 +210,7 @@ Agent receives a task
 | Framework | Status | Strengths |
 |---|---|---|
 | [**browser-use**](https://github.com/browser-use/browser-use) ⭐ | **86k+ stars, MIT** | Hottest OSS in 2026, Python, 5-line setup, supports OpenAI/Claude/Gemini/Ollama. |
-| [**Microsoft OmniParser v2**](https://github.com/microsoft/OmniParser) | Updated 2026, Apache 2.0 | Vision-based GUI parsing, 60% latency improvement, 39.6% accuracy with ScreenSpot Pro. The same repo includes **OmniTool** (Windows 11 VM control, can be used with GPT-5.5 / Claude Fable 5 / Claude Opus 4.8 / DeepSeek-V4-Pro / Qwen 2.5VL / Claude Computer Use). |
+| [**Microsoft OmniParser v2**](https://github.com/microsoft/OmniParser) | Updated 2026, Apache 2.0 | Vision-based GUI parsing, 60% latency improvement, 39.6% accuracy with ScreenSpot Pro. The same repo includes **OmniTool** (Windows 11 VM control, can be used with GPT-5.5 / Claude Opus 4.8 / DeepSeek-V4-Pro / Qwen 2.5VL / Claude Computer Use). |
 | **Playwright + LLM** (DIY)| — | Not a dedicated framework, but Playwright is the standard for web automation. Just add an LLM wrapper to use it. |
 
 **Why is `browser-use` so popular (86k stars)?**:
@@ -337,7 +339,7 @@ from langchain_openai import ChatOpenAI
 
 agent = Agent(
     task="Search Hacker News for top AI agent posts this week and summarize",
-    llm=ChatOpenAI(model="gpt-5.5"), # Can also swap for Claude Fable 5 / Claude Opus 4.8 / Gemini 3.1 Pro / DeepSeek-V4-Pro
+    llm=ChatOpenAI(model="gpt-5.5"), # Can also swap for Claude Opus 4.8 / Gemini 3.1 Pro / DeepSeek-V4-Pro
 )
 result = await agent.run()
 ```
@@ -459,7 +461,7 @@ Use the OpenAI Agents SDK (April 2026 version) to integrate a sandbox for runnin
 
 ## 🎯 Featured Projects (Templates / SDKs / Tool Collections)
 
-A table of 15 projects, categorized by use case.
+A table of 17 projects, categorized by use case.
 
 | Category | Project | ⭐ | Who it's for | Why it's recommended / Notes |
 |---|---|---|---|---|
@@ -468,6 +470,8 @@ A table of 15 projects, categorized by use case.
 | | [anthropics/claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python) | ⭐⭐⭐⭐⭐ | Building production agents with Claude | Anthropic's agent SDK, predates OpenAI's, same runtime as Claude Code. |
 | **Browser Use OSS**| [browser-use/browser-use](https://github.com/browser-use/browser-use) ⭐ | ⭐⭐⭐⭐⭐ | #1 OSS web agent | 86k+ stars, MIT, LLM-vendor agnostic. |
 | | [microsoft/OmniParser](https://github.com/microsoft/OmniParser) | ⭐⭐⭐⭐ | Vision-based GUI parsing | v2 has 60% latency improvement, Apache 2.0, includes OmniTool (Windows VM control). |
+| **Computer Use Agent Stack** | [bytedance/UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop) | ⭐⭐⭐⭐ | Running an open computer-use agent on the desktop | ByteDance's open "computer use" agent that sees the screen and controls your desktop. 36k+ stars, Apache-2.0. |
+| | [trycua/cua](https://github.com/trycua/cua) | ⭐⭐⭐⭐ | Building / sandboxing computer-use agents | Open toolkit for building "computer use" agents — safe sandboxes, SDKs, and tests on macOS / Linux / Windows. 18k+ stars, MIT. |
 | **AI Browser** (closed-source/consumer)| [Atlas](https://openai.com/index/introducing-chatgpt-atlas/) | ⭐⭐⭐⭐ | ChatGPT users + Agent Mode | From OpenAI, GA on macOS. |
 | | [Comet](https://comet.perplexity.ai/) | ⭐⭐⭐⭐ | Research-focused agent browser | From Perplexity, all platforms, citation-backed. ⚠ Brave injection + Amazon injunction. |
 | | [Dia](https://www.diabrowser.com/) | ⭐⭐⭐ | For those who want an AI browser **without** agent mode| From The Browser Company (acquired by Atlassian for $610M), focuses on performance. |

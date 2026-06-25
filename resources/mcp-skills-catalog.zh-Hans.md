@@ -2,7 +2,7 @@
 
 > [繁體中文](./mcp-skills-catalog.md) | **简体中文** | [English](./mcp-skills-catalog.en.md)
 
-> 把 Claude Code（或其他 CLI agent）接到你已经正在用的工具，不用反复切换视窗。本页是 62 个分类整理过的 MCP server / Claude Skill / 集成范例（含研究工作流 + multi-LLM delegation 两个专属区）。
+> 把 Claude Code（或其他 CLI agent）接到你已经正在用的工具，不用反复切换视窗。本页是 65+ 个分类整理过的 MCP server / Claude Skill / 集成范例（含研究工作流 + multi-LLM delegation 两个专属区）。
 
 ---
 
@@ -25,17 +25,18 @@
 2. [办公文件（Word / Excel / PowerPoint / PDF）](#2-办公文件word--excel--powerpoint--pdf)（7）
 3. [Google Workspace](#3-google-workspace)（2）
 4. [Microsoft 365](#4-microsoft-365)（3）
-5. [开发协作（GitHub / Atlassian / Slack…）](#5-开发协作github--atlassian--slack)（6）
-6. [数据库](#6-数据库)（7）
+5. [开发协作（GitHub / Atlassian / Slack…）](#5-开发协作github--atlassian--slack)（9）
+6. [数据库](#6-数据库)（8）
 7. [浏览器自动化 / 网页抓取](#7-浏览器自动化--网页抓取)（4）
 8. [设计（Figma / Excalidraw）](#8-设计figma--excalidraw)（3）
 9. [监控 / Observability](#9-监控--observability)（3）
 10. [媒体 / 串流（YouTube / Spotify）](#10-媒体--串流youtube--spotify)（3）
 11. [中文圈专属](#11-中文圈专属)（9）
-12. [其他常用（Cloudflare / Stripe…）](#12-其他常用cloudflare--stripe)（3）
+12. [其他常用（Cloudflare / Stripe…）](#12-其他常用cloudflare--stripe)（4）
 13. [研究工作流 Skills（学术 / paper / 文献）](#13-研究工作流-skills学术--paper--文献)（4）
 14. [Multi-LLM Delegation Skills](#14-multi-llm-delegation-skills)（3）
 15. [金融 / 交易 Agents](#15-金融--交易-agents)（2）
+16. [网页搜索 / 检索（Web Search / Retrieval）](#16-网页搜索--检索web-search--retrieval)（2）
 
 ---
 
@@ -371,6 +372,30 @@
 **适合谁**：要对大型 codebase 做架构分析、跨档追 reference、把"app code + DB schema + infra"放一起问的工程师 / 研究者。
 **备注**：跨界——既是 dev collab tool（理解既有 codebase）也算 research workflow（把任意素材转成 graph）。撞墙时用 graphify 抽结构、再丢回 Claude 推论。
 
+### [upstash/context7](https://github.com/upstash/context7) ⭐⭐⭐⭐⭐
+
+| 栏位 | 内容 |
+|---|---|
+| Stars | ★ 57k |
+| License | MIT |
+| 推荐度 | ⭐⭐⭐⭐⭐（写代码必装） |
+
+**教什么**：把最新版的 library / framework 文档拉进 agent 的 context，让它别再用过时或幻觉出来的 API；是安装量最高的 coding MCP 之一。
+**适合谁**：用 Claude Code / Cursor 写代码、常被旧版 API 或编造出来的方法坑到的开发者。
+**备注**：直接缓解“模型知识截止后 API 已经变了”的问题——写代码时把它挂上，省掉手动贴文档。
+
+### [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) ⭐⭐⭐⭐⭐
+
+| 栏位 | 内容 |
+|---|---|
+| Stars | ★ 13.5k+ |
+| License | MIT |
+| 推荐度 | ⭐⭐⭐⭐⭐（code intelligence） |
+
+**教什么**：把 codebase 索引成可查询的 knowledge graph，让 coding agent 用“查结构 / 符号 / 调用路径”取代反复 grep + 读文件。单一 static binary、158 种语言。
+**适合谁**：在大型或不熟的 repo 上跑 coding agent、想快速定位又想省 token 的人。
+**备注**：大改后要重新索引（graph 会 stale）；把它的回答当“快速第一手”、load-bearing 的结论（谁调用 X / 这段是不是死码）再用实际代码验证。
+
 ---
 
 ## 6. 数据库
@@ -459,6 +484,18 @@
 **适合谁**：用 Redis 当 cache / vector DB / queue 的人。
 **备注**：官方维护；包含 vector search 集成。
 
+### [awslabs/mcp](https://github.com/awslabs/mcp) ⭐⭐⭐⭐
+
+| 栏位 | 内容 |
+|---|---|
+| Stars | ★ 9.3k+ |
+| License | Apache-2.0 |
+| 推荐度 | ⭐⭐⭐⭐（**AWS 官方**） |
+
+**教什么**：AWS 官方 MCP server（Lambda / S3 / DynamoDB / CloudWatch / Cost Explorer 等）。
+**适合谁**：在 AWS 上、想让 agent 查询 / 操作云端资源的团队。
+**备注**：AWS 官方维护；沿用你现有的 AWS 登录（CLI profile / IAM role），不用另外管 token。
+
 ---
 
 ## 7. 浏览器自动化 / 网页抓取
@@ -467,7 +504,7 @@
 
 | 栏位 | 内容 |
 |---|---|
-| Stars | ★ 32k+ |
+| Stars | ★ 34k+ |
 | License | Apache-2.0 |
 | 推荐度 | ⭐⭐⭐⭐⭐（**Microsoft 官方**） |
 
@@ -822,6 +859,18 @@
 **适合谁**：用 Claude Code / Claude Desktop 做个人理财分析、想让 AI 找出被动收入机会的人。hosted remote MCP server 范例——直接 plug URL、0 安装、适合 Stage 5 学完 MCP 概念后用来体验 hosted vs self-hosted 差异。
 **备注**：Live endpoint `https://api.intuitek.ai/yield/mcp`（no auth、no API key）。x402 micropayment $1 USDC/call on Base（agent-to-agent 场景）；一般用户免费。纯分析工具，不涉及交易。GitHub：[thebrierfox/intuitek-ace](https://github.com/thebrierfox/intuitek-ace)（MIT License）。
 
+### [ComposioHQ/composio](https://github.com/ComposioHQ/composio) ⭐⭐⭐⭐⭐
+
+| 栏位 | 内容 |
+|---|---|
+| Stars | ★ 28.8k+ |
+| License | MIT |
+| 推荐度 | ⭐⭐⭐⭐⭐（1000+ 工具整合枢纽） |
+
+**教什么**：一个平台（SDK + MCP server），把 agent 连到 1000+ 应用（Slack / GitHub / Gmail / Salesforce / Notion…），登录它帮你处理，不用一个服务各写一个连接器。
+**适合谁**：agent 要跨大量工具、但不想维护几十个独立 MCP server 的团队。
+**备注**：提供 MCP server + Python / TypeScript SDK；可通过 MCP 接到 Claude Code。属"工具聚合器"（跟 n8n / Zapier 自动化平台同类）。
+
 ---
 
 ## 13. 研究工作流 Skills（学术 / paper / 文献）
@@ -947,6 +996,34 @@
 **教什么**：多角色 AI hedge fund 模拟，bull / bear / 基本面 / 技术面 / 风控 agent 协作产生 trade recommendation。
 **适合谁**：看过 Stage 7 multi-agent 想要一个完整应用案例的学习者；对 agent + 金融交叉领域有兴趣的人。
 **备注**：NO-LICENSE → 同上；**模拟性质、非投资建议**。
+
+---
+
+## 16. 网页搜索 / 检索（Web Search / Retrieval）
+
+### [exa-labs/exa-mcp-server](https://github.com/exa-labs/exa-mcp-server) ⭐⭐⭐⭐
+
+| 栏位 | 内容 |
+|---|---|
+| Stars | ★ 4.5k+ |
+| License | MIT |
+| 推荐度 | ⭐⭐⭐⭐（**Exa 官方**） |
+
+**教什么**：Exa 官方 MCP——为 LLM / agent 设计的网页搜索（neural + keyword 两种），回传干净结果直接喂进 prompt。
+**适合谁**：要做研究 / fact-check / 在线 RAG 检索的人——语义搜索在“概念相关”场景特别强，纯 keyword 反而没那么吃香。
+**备注**：需要 Exa API key。
+
+### [tavily-ai/tavily-mcp](https://github.com/tavily-ai/tavily-mcp) ⭐⭐⭐⭐
+
+| 栏位 | 内容 |
+|---|---|
+| Stars | ★ 2.1k+ |
+| License | MIT |
+| 推荐度 | ⭐⭐⭐⭐ |
+
+**教什么**：把 Tavily search API 包成 MCP——为 LLM / RAG 打造的网页搜索，回传答案 + 出处来源。
+**适合谁**：新手只想让 agent 会上网搜东西的第一选择——免费额度好上手。
+**备注**：有易用的 free tier；要 Tavily API key。
 
 ---
 

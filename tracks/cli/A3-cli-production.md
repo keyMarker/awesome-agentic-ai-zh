@@ -185,7 +185,7 @@ Track A 的人**已經在用** [Stage 7.5 的進階概念](../../stages/07.5-adv
 
 按用途分 4 類、9 個項目一張表搞定。**挑入口看「適合誰」、想深入細節點連結看 repo**。
 
-> 💡 **要找接日常工具的 MCP**（Notion / Obsidian / Excel / Postgres / Playwright / Slack / Linear / Figma 等）：[`resources/mcp-skills-catalog.md`](../../resources/mcp-skills-catalog.md)——62 個分類整理，每個都有 stars / license / 適合誰。下表只列「寫自己 MCP server / 找 reference」用的核心 catalog。
+> 💡 **要找接日常工具的 MCP**（Notion / Obsidian / Excel / Postgres / Playwright / Slack / Linear / Figma 等）：[`resources/mcp-skills-catalog.md`](../../resources/mcp-skills-catalog.md)——65+ 個分類整理，每個都有 stars / license / 適合誰。下表只列「寫自己 MCP server / 找 reference」用的核心 catalog。
 
 | 分類 | Project | ⭐ | 適合誰 | 為什麼推薦 / 備註 |
 |---|---|---|---|---|
@@ -195,7 +195,7 @@ Track A 的人**已經在用** [Stage 7.5 的進階概念](../../stages/07.5-adv
 | | [continuedev/continue](https://github.com/continuedev/continue) | ⭐⭐⭐⭐ | 想把 AI checks 接到 PR pipeline 強制執行 | ★ 33k+。完整介紹見 [`branches/for-developer.md`](../../branches/for-developer.md) |
 | **Observability + Cost** | [langfuse/langfuse](https://github.com/langfuse/langfuse) | ⭐⭐⭐⭐⭐ | 想把 trace / cost / session 都接起來 | open source LLM observability，★ 28k+。詳見 [Stage 7 常用推薦](../../stages/07-multi-agent-production.md#-常用-multi-agent--production-工具推薦按用途分類) |
 | | [Helicone](https://github.com/Helicone/helicone) | ⭐⭐⭐⭐ | 想要最快的 logging（改 base_url 就好）| proxy-based 監控、改 base_url 就有 logging + caching，★ 5.7k+ |
-| | [promptfoo/promptfoo](https://github.com/promptfoo/promptfoo) | ⭐⭐⭐⭐⭐ | CLI workflow 升 production 前跑回歸測試 | eval framework，★ 20k+。詳見 [Stage 7 Agent Benchmark Landscape + Reward-Hacking 警告](../../stages/07-multi-agent-production.md#-agent-benchmark-landscape怎麼看不要只看排行榜---reward-hacking-警告) |
+| | [promptfoo/promptfoo](https://github.com/promptfoo/promptfoo) | ⭐⭐⭐⭐⭐ | CLI workflow 升 production 前跑回歸測試 | eval framework，★ 22k+。詳見 [Stage 7 Agent Benchmark Landscape + Reward-Hacking 警告](../../stages/07-multi-agent-production.md#-agent-benchmark-landscape怎麼看不要只看排行榜---reward-hacking-警告) |
 | **Production CLI workflow 範本** | [obra/superpowers](https://github.com/obra/superpowers) | ⭐⭐⭐⭐ | 看完整實際在用的 workflow 長什麼樣 | 整套 production-ready skill collection、★ 220k+。看別人怎麼把 CLI workflow 做完整 |
 | | [obra/superpowers-marketplace](https://github.com/obra/superpowers-marketplace) | ⭐⭐⭐ | 要把 team 的 CLI workflow 打包共用 | 最簡 marketplace template、★ 1k+ |
 
