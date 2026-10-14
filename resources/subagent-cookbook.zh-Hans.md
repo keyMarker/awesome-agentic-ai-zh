@@ -19,7 +19,7 @@
 | **Prompt 模板** | 复制粘贴即可用的指令文字 | 不用自己想怎么写 |
 | **何时不用** | 比用 subagent 更好的替代方案 | 避免“大材小用” |
 
-> 💡 **怎么实际派遣 subagent**：在你的 Claude Code 终端对话框里，**直接输入（或粘贴）prompt 模板**——就这样。Claude 看到指令，会自动通过 Task tool（内部派遣机制）找到对应 subagent 跑，跑完后向主 session 回报一段摘要。**不需要 slash command，不需要特殊语法**。
+> 💡 **怎么实际派遣 subagent**：在你的 Claude Code 终端对话框里，**直接输入（或粘贴）prompt 模板**——就这样。Claude 看到指令，会自动通过 **Agent tool**（内部派遣机制）找到对应 subagent 跑，跑完后向主 session 回报一段摘要。**不需要 slash command，不需要特殊语法**。
 >
 > 📌 **subagent ≠ slash command**：`/agents` 是列表命令，**不是调用 subagent 的方式**；派遣 subagent 直接打对话 prompt 文字即可。完整对比表（subagent vs skill / vs slash command / description router）见 [Stage 5.5 §易混淆观念厘清](../stages/05-claude-code-ecosystem.zh-Hans.md#55--subagentsclaude-code-原生-multi-agent-机制-2025-新功能)。
 
@@ -361,6 +361,6 @@ Subagent 不是免费的——每次派遣**会烧 token，也有延迟**。下�
 ## 接下来
 
 - **想理解完整理论**（subagent 跟 skill / MCP 的差别、3 种 multi-agent 机制）→ [Stage 5.5](../stages/05-claude-code-ecosystem.zh-Hans.md#55--subagentsclaude-code-原生-multi-agent-机制-2025-新功能)
-- **CLI 日常用法 playbook** → [`tracks/cli/A3-cli-production.md` Playbook 4](../tracks/cli/A3-cli-production.zh-Hans.md#-playbook-4派遣-subagent-跑独立任务)
-- **想看 subagent 在 agent paradigm 体系内的定位** → [`resources/agent-paradigms.md`](./agent-paradigms.zh-Hans.md#subagent--在-agent-runtime-里再-spawn-agent)
-- **词汇快查** → [`resources/glossary.md` § 5. Claude Code 生态 — Subagent](./glossary.zh-Hans.md#subagent子-agent)
+- **CLI 日常用法 playbook** → [`tracks/cli/A3-cli-production.zh-Hans.md` Playbook 4](../tracks/cli/A3-cli-production.zh-Hans.md#-playbook-4派遣-subagent-跑独立任务)
+- **想看 subagent 在 agent paradigm 体系内的定位** → [`resources/agent-paradigms.zh-Hans.md`](./agent-paradigms.zh-Hans.md#subagent--在-agent-runtime-里再-spawn-agent)
+- **词汇快查** → [`resources/glossary.zh-Hans.md` § 5. Claude Code 生态 — Subagent](./glossary.zh-Hans.md#subagent子-agent)

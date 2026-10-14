@@ -5,6 +5,7 @@
 # 练习 5：Error Handling + Retry wrapper
 
 对应 [Stage 1 — LLM 基础](../../../stages/01-llm-basics.zh-Hans.md) 练习 5。
+> 🎓 **学习模式**：先运行提供的 `starter.py`（`python starter.py`），然后只改一个小地方，再重新运行现有测试：`python test.py` 和 `python test_anthropic.py`。如果测试失败，就撤销或修正这一个改动，再试一次。不需要重命名文件，也不需要重写整份解答。完整方法见 [`docs/HOW_TO_USE.md`](../../../docs/HOW_TO_USE.md)。
 
 ## 为什么这题重要
 

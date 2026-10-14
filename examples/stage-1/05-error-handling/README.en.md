@@ -5,6 +5,7 @@
 # Exercise 5: Error Handling + Retry Wrapper
 
 Corresponds to [Stage 1 — LLM Basics](../../../stages/01-llm-basics.en.md) Exercise 5.
+> 🎓 **How to use this**: First run the provided `starter.py` (`python starter.py`), then change exactly one small thing and run the existing tests again: `python test.py` and `python test_anthropic.py`. If a test fails, undo or fix that one change and try again. You do not need to rename the file or rewrite the whole solution. See [`docs/HOW_TO_USE.md`](../../../docs/HOW_TO_USE.md) for the full method.
 
 ## Why this matters
 

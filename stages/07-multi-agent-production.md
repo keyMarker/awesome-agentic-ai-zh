@@ -1,316 +1,475 @@
-# Stage 7 — 多 Agent 系統與穩定運作（Multi-Agent & Production）
+# Stage 7 — Agent 上線工程：可測、可看、可停、可恢復
 
 > **繁體中文** | [简体中文](./07-multi-agent-production.zh-Hans.md) | [English](./07-multi-agent-production.en.md)
 
-⏱ **時間估算**：2-4 週（約 15-30 小時）
+<!-- freshness: canonical=stages/07-multi-agent-production.md; verified_on=2026-09-13; scope=evals,observability,human-approval,persistence,recovery,orchestration,resources; max_age_days=90 -->
 
-> 💡 用語密度高（multi-agent / handoff / eval / observability / guardrails⋯）→ 翻 [`resources/glossary.md` 4 + 6](../resources/glossary.md#4-multi-agent)。
+先讓 AI 幫手可測、可看、可停、可恢復，再交給別人使用。
 
-> 📋 **本章組成**：〔Multi-Agent · Production 化 是什麼（先定位）+ 三層工程分工 + 何時用 multi-agent〕→ 學習目標 → 進入條件 → 必修閱讀 → Harness Engineering（**8 個核心元件含 Cost/Latency**）→ 動手練習（含練習 6 Cost Optimization）→ **Agent Benchmark Landscape：怎麼看，不要只看排行榜** → 常用工具推薦 → 精選 Projects → 自我檢查
-> 🔑 **關鍵名詞**：見 [`resources/glossary.md` 4 + 6](../resources/glossary.md#4-multi-agent)（multi-agent / orchestration / handoff / eval / observability / harness（模型外圍的執行與控制層））
+## 🎯 這一關在做什麼（先定位）
 
-最後一個階段。你正從「我會做 agent」走向「我能讓 agent **真的給人穩定用**——多個 agent 協作、有 eval、有 observability、能部署到可用環境」。**「Production 化」 ≠ enterprise scale**——只要 agent 能穩定產出 + 能讓別人使用、就算進入這 stage 範圍。
+讓 Agent 可測、可看、可停、可恢復。這稱為 **Agent Production Engineering（Agent 上線工程）**。像玩具車先裝方向盤、煞車與儀表板；不需大規模。
 
-## 🎯 Multi-Agent · Production 化 是什麼（先定位）
+全章用一個故事：AI 幫手查三個來源、整理摘要，送出前先請人確認。
 
-**本 stage = 多 agent 怎麼協作 + 把 agent 從 prototype 推到能穩定給人用的程度**。三句話釐清範圍：
+先記住上線順序：
 
-- **不是只學 framework**——Stage 4 已教 framework 怎麼挑
-- **不一定要 enterprise scale**——只要 agent 能讓別人用、就算 production 化
-- **核心是 harness engineering**——8 個核心元件 + eval + observability + cost / latency 控制
+> **先說清楚怎樣算成功 → 留下做事紀錄 → 危險動作先問人 → 確認跌倒後能繼續 → 最後才交給別人使用。**
 
-**跟前後 stage 的分工**：
-
-- **Stage 4** = 單 agent framework 怎麼挑、ReAct / Plan-Execute 等 pattern
-- **本 stage** = **多 agent 協作** + **harness engineering**（執行系統工程）+ **部署到可用環境 / observability / eval**
-
-### 三層工程分工：Prompt → Context → Harness
-
-工程分工可以分成三層、對應 stack 不同位置（不是 call 一次 vs 多次的差別）：
-
-| 層級 | 概念 | 核心問題 | 關注單位 | 對應 stage |
-|---|---|---|---|---|
-| 1 | **Prompt Engineering** | 這一次要怎麼問？ | **單次 LLM call** | [Stage 2](02-prompt-engineering.md) |
-| 2 | **Context Engineering** | 這次該給模型哪些資訊？ | **多次互動中的上下文** | [Stage 6](06-memory-rag.md) |
-| **3** | **Harness Engineering**<br>（**本 stage**） | 整個流程怎麼跑起來？ | **可執行的 LLM workflow / system** | **本 stage** |
-
-> 🔁 **下一層：Loop Engineering（迴圈工程）**：prompt → context → harness 之後，2026 浮現的第四層是「**設計 agent 的迭代迴圈本身**」——目標、可用工具、context 管理、**終止條件**、錯誤處理，讓 agent 跑數百步、跨 session 仍可靠。Claude Code 的 `/goal`（給一個可驗證的完成條件、agent 自己 loop 到達成）就是這個方向；[Stage 5.6 Dynamic Workflows](05-claude-code-ecosystem.md) 則是 agent 自己寫出 loop 腳本。譜系：ReAct（2022）→ AutoGPT（2023）→ /goal（2026）。
-
-**白話差異**：
-- **Prompt** = 設計一個好的問法，讓模型這次回答準
-- **Context** = 動態決定要放入哪些背景、記憶、文件、工具結果，讓模型知道現在情境
-- **Harness** = 把 prompt、context、工具、狀態、流程控制、錯誤處理串成一套可以運作的系統
-
-**本 stage 三個核心問題**：
-
-1. **Multi-agent 協作** — debate / planner-executor / peer review / handoff / supervisor-worker pattern
-2. **Harness Engineering** — agent loop / tool registry（agent 可呼叫工具的清單 + 介面定義）/ context manager / safety / retry / telemetry / eval / cost（8 個核心元件、下面詳述）
-3. **Production 化** — eval harness / observability / cost & latency 優化 / 部署到可用環境
-
-**跟 Stage 5 的分工**（避免混淆）：
-
-| 跟誰比 | 那邊講什麼 | 本 stage 講什麼 |
+| 你現在卡在哪裡 | 先做什麼 | 你要拿出的證據 |
 |---|---|---|
-| **Stage 5.5 Subagents** | Claude Code 原生 subagent 機制（markdown-based、不寫程式）| 通用 multi-agent framework（autogen / crewAI / langgraph、跨 vendor）|
-| **Stage 5.7 Claude Code source** | Claude Code source 解剖（參考實作 case study）| Harness engineering 通則（不綁特定 vendor）|
+| 不知道摘要算不算成功 | 先寫固定案例與成功條件 | 可重跑的檢查結果 |
+| 出錯時不知道壞在哪一步 | 記錄每一步、錯誤、時間與成本 | 一次完整做事紀錄 |
+| 會寄信、付款、刪除或寫入資料 | 在動作前停下來問人，並先保存進度 | 誰同意了，以及要從哪裡繼續 |
+| 前三項都能重跑並通過 | 才交給別人使用 | 系統是否正常、怎麼停止、怎麼回到舊版 |
 
-### ⚠ 但你真的需要 multi-agent 嗎？
+先做穩單一 Agent；需要獨立分工或互相檢查時，再加 Agent。
 
-**Multi-agent 不是 default、是任務真的需要時才上的設計**。多數場景應先嘗試 simple workflow 或 single agent；**只有在任務天然可分解、需要平行探索、單一 context 不夠、或需要明確角色分工時，multi-agent 才值得引入**。硬上會付 **3-10× token、debug 困難、context fragmentation（context 被切散在多個 agent、彼此看不到全貌）嚴重**。
+<details markdown="1">
+<summary>⏱ 展開：時間、環境、費用與安全提醒</summary>
 
-> 📌 **決策框架的 canonical 在 Stage 4**：完整的 Anthropic / Cognition 立場對照 + 4 個「該上 multi-agent」訊號 + 每個訊號對應的 pattern，見 [Stage 4 §什麼時候真的需要 multi-agent](04-agent-frameworks.md#什麼時候真的需要-multi-agent不要硬上)（設計階段決策）。本節只做 production 前的最後回頭檢查——**4 個訊號一個都不在？** → single agent + 好 prompt + tool use 就夠、別硬上 multi-agent。**本 stage 的 harness engineering 部分（8 個元件 / eval / observability）即使你最後用 single agent 也都會用到**——所以即使你決定不走 multi-agent、本 stage 仍是必修。
+- 建議分成數次短練習，不必一次做完。
+- 需要 Python、Git；部署練習另需 Docker。
+- 每個練習都先跑不需 API 金鑰的測試。要呼叫付費模型時，先設小額預算。
+- 做事紀錄可能包含提示、工具輸入與模型回答。不要把密碼、個資或客戶資料直接送進追蹤平台。
+- 多一個 Agent 通常就多一份模型呼叫、延遲與除錯工作。不要假設多 Agent 一定比較快或比較準。
+
+</details>
 
 ## 📌 學習目標
 
-- 設計 multi-agent orchestration 模式（debate、planner-executor、peer review）
-- 為 agent 架一套 evaluation harness
-- 加上 observability（tracing、logging、cost tracking）
-- 用 Anthropic SDK / OpenAI SDK 部署到可用環境（進階功能：streaming、prompt caching、batching）
-- 把 agent deploy 到 production（Docker、serverless、monitoring）
+完成本章後，你能：
+
+1. 分清 AI 幫手工作的地方、反覆做事的節奏和帶岔路的完整路線。
+2. 把真實失敗寫成可重跑的測試，不只看一次漂亮回答。
+3. 找到一次任務裡的每一步、錯誤、時間與成本。
+4. 讓高風險動作先停下問人，並能從正確位置繼續。
+5. 用同一組證據判斷系統能不能交給別人使用。
+
+<a id="-先認識核心詞"></a>
+## 🧩 先認識十九個核心詞
+
+先看「像什麼」抓住方向，再看「本章用途／技術界線」了解這一關怎麼使用它。同類詞已合併在同一組，不需要讀兩次。
+
+<table>
+<thead><tr><th scope="col">先解決什麼</th><th scope="col">核心詞</th><th scope="col">五歲也能懂的說法</th><th scope="col">本章用途／技術界線</th></tr></thead>
+<tbody>
+<tr><th scope="rowgroup" rowspan="6">先讓任務跑得動</th><td><strong>Agent Harness（Agent 執行架構）</strong></td><td>AI 幫手工作的房間</td><td>放入模型、工具、權限、狀態、錯誤處理與紀錄的執行環境；本章用它安全地查資料與準備摘要</td></tr>
+<tr><td><strong>Agent Loop（Agent 迴圈）</strong></td><td>做一步、看結果，再決定下一步</td><td>模型在一次任務裡反覆選動作、讀取工具結果，直到完成、超出限制或需要問人</td></tr>
+<tr><td><strong>Workflow Graph（工作流程圖）</strong></td><td>有岔路的路線圖</td><td>用步驟、連線、條件與狀態排出不同情況該走的路；本章用它安排查資料、檢查與送出前核准</td></tr>
+<tr><td><strong>Orchestration（編排）</strong></td><td>安排誰先做、誰後做</td><td>控制步驟、資料流、角色、重試與停止條件</td></tr>
+<tr><td><strong>Multi-Agent（多 Agent）</strong></td><td>幾個 AI 幫手分工</td><td>多個 Agent 以清楚角色共同完成任務；它是選擇，不是每套系統都需要</td></tr>
+<tr><td><strong>Handoff（交接）</strong></td><td>把接力棒和筆記一起交出去</td><td>一個 Agent 把控制權、必要資料與成果證據交給另一個 Agent</td></tr>
+</tbody>
+<tbody>
+<tr><th scope="rowgroup" rowspan="7">再證明有做對</th><td><strong>Evaluation／Eval（評測）</strong></td><td>用同一張檢查表反覆檢查</td><td>用固定案例、環境、評分方法與門檻量測 Agent 的結果和過程</td></tr>
+<tr><td><strong>Outcome（結果）</strong></td><td>最後真的發生什麼</td><td>任務結束時外部可驗證的狀態；本章要確認摘要真的包含三個合格來源，而不是只相信 Agent 說「完成了」</td></tr>
+<tr><td><strong>Trajectory（軌跡）</strong></td><td>一路留下的腳印</td><td>一次執行中做過的事，包括工具呼叫、中間結果、錯誤與輸出</td></tr>
+<tr><td><strong>Grader（評分器）</strong></td><td>照規則批改一份答案</td><td>依成功條件替一個 Eval Case 評分的方法、程式或模型；本章要求保留規則與人工抽查</td></tr>
+<tr><td><strong>Evaluation Harness（評測執行架構）</strong></td><td>固定出題、收卷和計分的考場</td><td>載入案例、重跑 Agent、呼叫 grader 並保存結果的測試系統；它和負責日常執行的 Agent Harness 不是同一個責任</td></tr>
+<tr><td><strong>Trace（追蹤紀錄）</strong></td><td>把一路的腳印收進一本紀錄簿</td><td>一次任務中依時間排列的步驟、工具呼叫、錯誤與結果；本章用它找出哪一步出錯</td></tr>
+<tr><td><strong>Observability（可觀測性）</strong></td><td>替系統裝透明窗</td><td>用追蹤紀錄、系統紀錄與數值指標看見內部狀態；本章用它找出摘要在哪一步漏掉來源</td></tr>
+</tbody>
+<tbody>
+<tr><th scope="rowgroup" rowspan="6">最後讓它能停、能接著做</th><td><strong>Guardrail（護欄）</strong></td><td>先擋住不能做的事</td><td>限制輸入、輸出、工具權限或高風險操作的規則</td></tr>
+<tr><td><strong>Human Approval（人工核准）</strong></td><td>危險動作先問人</td><td>執行敏感 tool call 前暫停，由人批准、修改或拒絕</td></tr>
+<tr><td><strong>Checkpoint（檢查點）</strong></td><td>先存檔再往下走</td><td>保存目前做到哪裡和版本資訊，讓任務可以恢復</td></tr>
+<tr><td><strong>Resume（續跑）</strong></td><td>回到存檔點繼續</td><td>用同一個任務編號載入檢查點並繼續執行</td></tr>
+<tr><td><strong>Recovery（復原）</strong></td><td>跌倒後安全回來</td><td>失敗後停止、重試、補償或人工接手的策略</td></tr>
+<tr><td><strong>Idempotency（冪等）</strong></td><td>按兩次也只做一次</td><td>使用相同重試識別碼時，不會重複寄信、付款或寫入資料</td></tr>
+</tbody>
+</table>
+
+**Prompt（提示）**是你交給模型的指令與材料。**Context（上下文）**是這一步需要看的資料。它們仍然重要；本章是在外面補上執行、檢查和復原的系統。
 
 ## 🚪 進入條件
 
-你應該已經：
-- 完成 Stage 4（用過至少一個 agent framework 跑 multi-agent demo）
-- 完成 Stage 5（懂 MCP / Skills / Plugins / Subagents 各自角色，並用 5.7 解剖過 harness 內部）
-- 完成 Stage 6（會基本 RAG，能講出 memory pattern 差異）
-- 對 Docker / git / CI 基礎熟悉（部署成可用服務會用到）
+你至少應該完成：
 
-沒到的話 → 補完前面幾個 stage。本 stage 是「組合所有前面學到的東西 → 跑 production」，缺一塊都會卡。
+- [Stage 4](04-agent-frameworks.md)：知道 Agent、Tool 與 Workflow 是什麼。
+- [Stage 5](05-claude-code-ecosystem.md)：看過工具權限、Subagent 與開發流程。
+- [Stage 6](06-memory-rag.md)：知道 Context、RAG 與 Memory 不一樣。
+
+Docker 還不熟也可以開始；先做四個核心練習，再為核心練習 4 補 Docker。
 
 ## 📚 必修閱讀
 
-1. [**Anthropic — Building Effective Agents**](https://www.anthropic.com/engineering/building-effective-agents) — 用 production 的角度再讀一次
-2. [**Anthropic — Prompt Caching**](https://www.anthropic.com/news/prompt-caching) — 90% 成本下降的技巧
-3. [**Anthropic — Message Batches API**](https://docs.anthropic.com/en/docs/build-with-claude/batch-processing) — 非同步 batch job
-4. [**anthropics/courses — Prompt Evaluations**](https://github.com/anthropics/courses) ⭐⭐⭐⭐⭐ ★ 21k+ — Anthropic 官方 5 course umbrella、**module 4「Prompt Evaluations」對應本 stage eval / observability 部分**。Jupyter notebook、教怎麼系統化評估 prompt 跟 agent 行為
-5. **任一 eval framework 的文件** — promptfoo 或 LangSmith 或 weave
-6. [**ai-boost/awesome-harness-engineering**](https://github.com/ai-boost/awesome-harness-engineering)（★ 2k+）— agent harness 的工具 / pattern / eval / memory / MCP / observability 全集合
-7. [**ZhangHanDong/harness-engineering-from-cc-to-ai-coding**](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)（★ 1.3k+）— 從 Claude Code 原始碼學 harness 設計（中文）
+先按 production 順序讀這六份：
 
-## 🏗 Harness Engineering — production agent runtime 的工程設計 ⭐ 本 stage 核心概念
+1. [Anthropic — Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)：先分清 **Outcome** 與完整 **Trajectory**；Agent 說「完成」不等於外部結果真的完成。
+2. [OpenAI Agents SDK — Tracing](https://openai.github.io/openai-agents-python/tracing/)：看 trace、span、tool、handoff 與 guardrail 事件如何串起一次 run。
+3. [OpenAI Agents SDK — Human-in-the-loop](https://openai.github.io/openai-agents-python/human_in_the_loop/)：敏感工具先暫停，再保存 `RunState`、核准或拒絕並 resume。
+4. [LangGraph — Persistence](https://docs.langchain.com/oss/python/langgraph/persistence)：分清 checkpoint 與跨 thread store，知道中斷、復原與長期記憶不是同一件事。
+5. [LangGraph — Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)：看人工核准如何暫停與續跑，以及為什麼 interrupt 前的副作用必須冪等。
+6. [Anthropic — Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)：先用簡單組合，只有真的需要分工時才增加自主性或 Multi-Agent。
 
-### 定位：模型外圍的執行與控制層
+<details markdown="1">
+<summary>📖 展開：延伸閱讀與用途</summary>
 
-要把 LLM 變成可用的 agent，通常會碰到三層工程問題。這三層對應的是不同工程位置，不是單純用「一次 call」或「多次 call」來區分。
+1. [Anthropic — Develop tests and evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)：先寫可量測的成功標準，再選評分方式。
+2. [OpenAI Agents SDK — Testing utilities](https://openai.github.io/openai-agents-python/testing/)：用可重複的假模型測試，不必每次花 API 費用。
+3. [OpenAI Agents SDK — Running agents](https://openai.github.io/openai-agents-python/running_agents/)：看一次 Agent Loop 如何反覆執行，並用 `max_turns` 停下來。
+4. [OpenAI Agents SDK — Multi-agent orchestration](https://openai.github.io/openai-agents-python/multi_agent/)：比較 manager 與 **Handoff**；這是選修，不是第一個 production 步驟。
+5. [LangGraph — Workflows and agents](https://docs.langchain.com/oss/python/langgraph/workflows-agents)：分清固定 Workflow 與會自己決定下一步的 Agent。
+6. [Microsoft Agent Framework — Workflow concepts](https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/)：看 executor、edge、event 與 state 怎麼組成 Workflow Graph。
+7. [OpenAI — Harness engineering](https://openai.com/index/harness-engineering/)：看環境、回饋迴路與機器規則如何幫 Agent 穩定工作。
+8. [OpenTelemetry — GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai)：認識可攜的追蹤欄位；規格仍在演進，不要假設所有平台都完整支援。
 
-> 💡 **Simon Willison 2025**：「coding agent = LLM + harness」、harness = 所有**不是 model 本身**的程式碼。
->
-> 💡 **OpenAI 2026 也使用 "Harness Engineering" 這個說法**（見 [OpenAI Harness Engineering article](https://openai.com/index/harness-engineering)、2026-02 發布）。
+</details>
 
-| 層級 | 工程的對象 | 在哪學 |
+<a id="五層工程分工prompt--context--harness--loop--graph"></a>
+<a id="-harnessloopgraph-各自管什麼"></a>
+## 🧭 Harness、Loop、Graph 與 Eval 怎麼合作？
+
+它們不是四代產品，也不是只能選一個。請把同一個研究助理想成四個角度：
+
+| 責任 | 白話問題 | 研究助理例子 |
 |---|---|---|
-| **1. Prompt Engineering** | 送進 LLM 的**字串**（system prompt / few-shot / 格式） | [Stage 2](02-prompt-engineering.md) |
-| **2. Context Engineering** | 視窗裡裝的**資訊**（RAG / memory / tool defs / history 組裝） | [Stage 6](06-memory-rag.md) |
-| **3. Harness Engineering**<br>（**本節**） | 模型**外圍的執行與控制層**（loop / retry / sandbox / observability / 部署） | 本 stage |
+| **Agent Harness** | 它在哪裡安全做事？ | 只允許讀資料；準備送出時必須停下 |
+| **Agent Loop** | 它為什麼再做一輪？ | 少一個來源就再查一次；達到上限就停止 |
+| **Workflow Graph** | 遇到不同情況要往哪走？ | 來源不足就回去查；足夠就進入人工核准 |
+| **Eval** | 我怎麼知道結果和過程合格？ | 檢查三個來源、引用正確、沒有跳過核准 |
 
-**怎麼分辨自己在做哪一層？問**：
+Eval 會檢查 **Outcome**、**Trajectory**，再由 **Grader** 依規則判斷是否合格。Eval 可以讓 Loop 重試、讓 Graph 換路，或要求 Harness 停止；但把 Harness 和 Eval 放在一起，仍不會自動產生「何時重複、何時停止」的 Loop。
 
-1. 我改的是**字串本身**嗎？→ Prompt engineering
-2. 我改的是**塞進視窗的資訊**嗎？→ Context engineering
-3. 我改的是**呼叫模型的外圍程式**嗎？→ Harness engineering
+![Agent Harness 是工作環境，Agent Loop 是反覆做與看的節奏，Workflow Graph 是帶分支的路線，Eval 用 Grader 檢查 Outcome 與 Trajectory](../resources/diagrams/agent-production-relationship.png)
 
-→ 三層**正交**：1 次 call 的 RAG app 也在做 context engineering（重點是組視窗）；50 次 call 但沒做 retrieval 的 chatbot 仍只在做 prompt engineering。
+學習順序是 [Stage 3 的 Agent Loop](03-tool-use-and-hello-agent.md) → [Stage 4 的 Workflow Graph／Agent Framework](04-agent-frameworks.md) → 本章的安全上線整合。**Loop Engineering** 是 IBM 使用的新興說法；**Graph Engineering** 的用法更鬆散。讀者要先學清楚責任，再把這些名稱當成社群搜尋詞。來源：[IBM — Loop Engineering](https://www.ibm.com/think/topics/loop-engineering)、[Anthropic — Agent harness 與 eval](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)、[Microsoft Agent Framework — graph-based workflows](https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution)。
+
+<a id="-harness-engineering--production-agent-runtime-的工程設計--本-stage-核心概念"></a>
+## 🏗 Agent Harness：先把安全工作間準備好
+
+模型像會想辦法的大腦，但它不能自己讀檔、寄信或保存進度。Agent Harness 把工具和規則接在模型旁邊，也常負責執行 Agent Loop。外層排程器可以多次呼叫同一個 Harness，所以 Harness 不只代表一次很短的執行。正式設計這個環境的工作常叫 **Harness Engineering**。來源：[OpenAI — Harness engineering](https://openai.com/index/harness-engineering/)、[Anthropic — Agent harness 定義](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)、[Anthropic — Managed agents](https://www.anthropic.com/engineering/managed-agents)。
 
 ### Harness 的 8 個核心元件
 
-**Harness Engineering（Agent 執行系統設計）= 把 LLM、tools、memory、state、workflow control、retry、safety、eval、observability 與 deployment 串成一套可執行、可觀測、可維護的 agent 系統**。
+這八項是本專案的 production 檢查表，不是全世界唯一的官方分類。
 
-→ 所有**不屬於 model weights、也不只是 prompt string 本身**的工程元件都算 harness 範圍。一個可部署的 agent runtime 包含這 8 個核心元件（前 6 個是 runtime 內建、第 7 個 eval 是外掛工具、第 8 個 cost / latency 是跨層議題）：
-
-| 元件 | 做什麼 | 對應本 stage 練習 |
+| 元件 | 五歲也能懂的說法 | 上線前要問 |
 |---|---|---|
-| **Agent loop** | 「LLM → tool → result → LLM」迴圈、穩定處理多輪 | 練習 1 multi-agent 辯論 |
-| **Tool registry** | 動態 tool dispatch、permission gate、sandboxing | （在每個 framework / SDK 都有）|
-| **Context manager** | message history 管理、context window 控制、auto-compact | Stage 6 + 本 stage 練習 4 SDK |
-| **Safety layer** | permission prompts、sandboxed exec、destructive op 攔截 | （Claude Code 內建、SDK 可自訂）|
-| **Retry / recovery** | tool fail 怎麼處理（exception vs LLM 自己看 error 反思） | 練習 4 SDK 進階 |
-| **Telemetry / Observability** | metrics、logging、token counting、trace export | **練習 3 Observability** |
-| **Eval harness** | regression test、quality gate、A/B test | **練習 2 Eval** |
-| **Cost / Latency optimization** ⭐ 2024-2026 必修 | prompt caching、model routing、thinking budget、batching、semantic cache | **練習 6 Cost optimization**（新加）|
+| **1. Orchestration／Run loop** | 決定下一步做什麼 | 誰開始、誰停止、交接失敗怎麼辦？ |
+| **2. Tool／Permission boundary** | 只給它需要的鑰匙 | 哪些工具能讀、能寫、能刪？ |
+| **3. Context／State／Checkpoint** | 保存它現在做到哪裡 | 中斷後能不能從正確位置繼續？ |
+| **4. Retry／Recovery／Idempotency** | 跌倒能重來，又不會重複扣款 | 重試會不會重複寄信、付款或寫資料？ |
+| **5. Guardrail／Human approval** | 危險動作先問大人 | 哪些操作一定要人按核准？ |
+| **6. Telemetry／Observability** | 裝上透明窗 | 能不能看到 trace、錯誤、延遲與 token？ |
+| **7. Eval harness** | 每次改動都重新考試 | 有固定案例、評分規則和失敗門檻嗎？ |
+| **8. Cost／Latency budget** | 先說可以花多少錢和時間 | 超過預算時要停止、降級還是排隊？ |
 
-**Framework vs Harness 關鍵差別**：
-- **Framework**（[Stage 4](04-agent-frameworks.md)）規範 **API** — 你呼叫的介面長什麼樣
-- **Harness**（本節）規範 **runtime** — 怎麼跑、怎麼 recovery、怎麼觀測
+<details markdown="1">
+<summary>🔧 展開：回饋、復原與成本的實作重點</summary>
 
-### 參考實作
+- 工具錯誤要寫成 Agent 看得懂的回饋，不只丟一大串 stack trace。
+- 評分者最好和執行者分開；不要只問 Agent「你自己做得好不好」。
+- 每個有外部副作用的動作都要設計 **idempotency（冪等）**，避免重試時重複付款、寄信或新增資料。
+- Prompt caching、batching、model routing 與較小模型都可能省成本，但效果依工作而異。先量 baseline，再改一項，再重測。
+- Anthropic prompt caching 可用自動方式或明確的 `cache_control`；快取期限與讀寫價格依方案不同，請以[官方文件](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)為準。
+- Trace 可能收進敏感輸入與輸出。上線前設定遮罩、保留期限與存取權限。
 
-想看實際在 production 跑的 harness 長什麼樣？兩個 reference：
+</details>
 
-- **Claude Code 整個 runtime** — 是 reference harness 實作。**讀 source 練習見 [Stage 5.7](05-claude-code-ecosystem.md#57--claude-code-source-解剖reference-harness-implementation-track-b-必看)**（clone `claude-agent-sdk-python` 解剖 main loop + 上表前 6 個 runtime 元件位置；第 7 個 Eval harness 是外掛、第 8 個 Cost / Latency 是 cross-cutting、見下方深入段）
-- **`anthropics/claude-agent-sdk-python`** source — 上面練習用的具體 repo
+<a id="-loop-engineering--讓-agent-做看改而且知道何時停"></a>
+## 🔁 Agent Loop：做一步、看結果，再決定
 
-→ 本 stage 剩下的 6 個練習（multi-agent / eval / observability / SDK / deploy / cost）每個都是 harness 的一個面向。學完整 stage = 拼出完整的 harness engineering mental model。
+先分清三種很像、但範圍不同的 Loop：
 
-### 第 8 個核心元件深入 — Cost / Latency Optimization（2024-2026 Production 化必修）
-
-Production agent 跑久了、**cost / latency 兩條線會吃掉你大半預算與使用者體驗**。2024-2026 前沿模型都把這當 first-class API feature——**會用 = 省 50-90% cost / latency**。
-
-| 技巧 | 怎麼省 | 2026 狀態 |
+| 名稱 | 它重複什麼 | 例子 |
 |---|---|---|
-| **Prompt caching** | 重複 prefix（system prompt、long context）一次計費、後續 cache hit 折扣 ~90% | Anthropic / OpenAI / Gemini 全支援、自動或手動標記 |
-| **Model routing / cascade** | 簡單 query → 小 model、難 query → 前沿模型 | [RouteLLM](https://github.com/lm-sys/RouteLLM) / [OpenRouter](https://openrouter.ai/) production 內建 |
-| **Thinking budget** | reasoning model 可控 thinking token 上限、trade latency / quality | Claude / Gemini API 參數、o-series 預設高 |
-| **Speculative decoding** | 小 model 預測 N token、大 model 一次驗證、單 model 速度 ×2-3 | vLLM / TGI 內建、推論層自動 |
-| **Batching** | 多 query 並行處理、GPU 利用率高 | vLLM、production inference layer |
-| **Semantic caching** | 相似 query 共用回答（不只 exact match）| [GPTCache](https://github.com/zilliztech/GPTCache) / Helicone 內建 |
+| **程式迴圈** | 同一段程式碼 | `for item in items`；這是語法，不是本節主題 |
+| **Agent Loop** | 模型 → 工具 → 工具結果 → 模型 | 一次 run 裡持續呼叫工具，直到完成或碰到 `max_turns` |
+| **Loop Engineering** | 目標 → 動作 → 觀察 → 調整 | 一次長 run 或跨 session／排程反覆工作，每輪都有驗證、記憶、預算與停止條件 |
 
-**Track A 怎麼用**（用 CLI agent 的人）：
-- 在 Claude Code / Cursor 設定 prompt caching、daily session 省 50-90% cost
-- 用 [RouteLLM](https://github.com/lm-sys/RouteLLM) / [OpenRouter](https://openrouter.ai/) 動態切換 model（簡單問用 Haiku / Flash、難問用 Opus / Pro）
-- Claude API 用 `thinking_budget` 參數控 reasoning model 的 token 上限
+IBM 用 `Goal → Action → Observation → Adjustment` 說明較外層的 **Loop Engineering**。重點不是讓 Agent 永遠自己跑，而是每一輪都能回答：**目標還成立嗎？證據夠了嗎？要繼續、停止，還是交給人？**
 
-**Track B 怎麼 build**（自己寫 agent 的人）：
-- 自架 cascade router、把 query embedding → classifier → model 對應
-- 在 agent loop 內監控 token cost、超 budget 自動降級
-- 部署到可用環境時整合 semantic cache 層
-- [Helicone](https://github.com/Helicone/helicone) / [langfuse](https://github.com/langfuse/langfuse) 等 observability 平台都已內建這幾招、不用自己寫
+因此，Loop Engineering **不是 Harness 的下一代產品，也不會自動淘汰 Harness**。在 Anthropic 的用語裡，Harness 本身就包含呼叫模型與路由工具的 loop；IBM 的 Loop Engineering 則把目標、檢查、工具、hooks、context、subagent 與持久狀態放進更大的反覆工作設計。不同文件切邊界的方法不同，所以請記責任，不要硬背一張唯一的層級圖。來源：[IBM — Loop Engineering](https://www.ibm.com/think/topics/loop-engineering)、[Anthropic — Managed Agents](https://www.anthropic.com/engineering/managed-agents)。
 
-## 🛠 動手練習（基礎 illustrative 練習）
+模型變強時，某個補丁可能可以刪掉。例如 Anthropic 在較新模型上移除了先前 harness 使用的 context reset。但這只表示**一個 workaround 經同一組 Eval 證明不再需要**，不表示權限、安全、log、eval 或 recovery 自動過時。來源：[Anthropic — Harness design for long-running applications](https://www.anthropic.com/engineering/harness-design-long-running-apps)。如何逐項保留、簡化或移除，放在 [Stage 7.5 的 Model–Harness Fit](07.5-advanced-agentic-concepts.md)。
 
-### 練習 1：Multi-Agent 辯論
-兩個 agent 辯論一個題目（例如「該用 Python 還是 Rust 寫 backend」），第三個 agent 當裁判。觀察辯論收斂或分歧的 pattern。
+<a id="-graph-engineering--把步驟loop-與核准排成完整路線"></a>
+## 🗺 Workflow Graph：遇到岔路時知道往哪走
 
-### 練習 2：Eval
-替你前面的 agent 寫一份 eval，跑 N 次量成功率。把「我用眼睛看一下」的習慣換掉。
+Agent Loop 負責「要不要再做一次」。Workflow Graph 負責「接下來要去哪裡」。它像一張有岔路的校園地圖；地圖能排路線，但不會替每一站完成工作。
 
-### 練習 3：Observability
-把 LangSmith、Helicone、或 weave 接上一個 agent，看完整 trace。理解「沒 observability 的 agent debug = 黑盒」。
+外面的文章有時把這份工程工作稱為 **Graph Engineering**。這是新興稱呼；真正需要學會的是 node、edge、branch、cycle、state、checkpoint 與 human approval，不是先背一個尚未統一的標籤。
 
-### 練習 4：SDK 進階
-在同一次呼叫裡用 streaming + prompt caching + tool use。看成本怎麼降下來。
+> **一個節點裡可以有 Agent Loop；節點之間由 Workflow Graph 安排順序。**
 
-### 練習 5：Deploy
-把一個 agent 包進 Docker，deploy 到雲端（任何 provider 都行）。學會把 prototype 變成可以給別人跑的東西。
+<details markdown="1">
+<summary>🧠 展開：什麼時候選 Loop、Graph 或 Multi-Agent</summary>
 
-### 練習 6：Cost Optimization（新加）⭐
-量你前面任一個練習 agent 的 token cost、加上 prompt caching、再量一次。觀察 cache hit rate 跟 cost 下降的對應關係。**Bonus**：接 [RouteLLM](https://github.com/lm-sys/RouteLLM) 或 [OpenRouter](https://openrouter.ai/)、做 cascade routing（簡單 query → Haiku / 難 query → Opus），量平均 cost。
+- 任務只有一條路，但可能要重試很多次：先用 Loop。
+- 任務有分支、平行步驟、人工核准或需要從中間恢復：用 Graph／Workflow。
+- 不同部分真的能獨立工作，或必須由不同角色互查：才加入 Multi-Agent。
+- 一個 Graph 節點可以是 Agent、工具、固定程式或「等人核准」；不是每個格子都要放一個 Agent。
+
+- **選修官方文件**：[OpenAI Responses Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) 是 Beta。支援 GPT-6.1 Sol 與所有 GPT-5.6 模型。模型自行分派 subagent；它們有各自 context，但共用請求的模型與工具。這不等於 SDK 的 manager／handoff。
+- `max_concurrent_subagents` 預設為 3，計算整棵樹的活躍 subagent，不含 root。並行設定、總數與樹深沒有固定上限；分工可能增加 token。`max_tool_calls` 不支援。`reasoning.summary` 與 `/responses/compact` 也不支援。各 Agent 改用獨立的 server-side 自動 compaction。
+- Hosted collaboration 由 API 執行；自訂 function call 仍由應用程式執行。Context 分開不代表工具權限隔離；應用程式仍須核准敏感工具，並限制成本與停止條件。
+- [Google Managed Agents](https://ai.google.dev/gemini-api/docs/agents) 的 Antigravity 是 Public Preview。`antigravity-preview-09-2026` 預設用 Gemini 3.8 Flash。提供受管 Linux sandbox 與跨 interaction 保留的檔案。也有程式執行、自訂 function 與 remote MCP。
+- 網路預設不限對外連線；先設 allowlist 與最小工具權限。搜尋與 URL 擷取不代表 GUI 瀏覽器控制；目前 `computer_use` 不支援。Sandbox 也不能取代本章的 Eval、核准與復原。
+- Google 文件說明：以 managed credential ID 引用秘密。Egress proxy 注入秘密，不暴露在 sandbox。Agent 能使用所提供 credential 的完整權限範圍；只授予任務需要的最小範圍。
+
+</details>
+
+<a id="-九個-eval-基礎積木先學會怎麼出考卷"></a>
+## 🧪 Eval：先說要什麼，再決定怎麼評
+
+Eval 不是一個分數，也不是等系統做完才補的報表。它先寫清楚「怎樣才算成功」，再用同一套方法檢查不同版本。
+
+先從 **Outcome（結果）**開始。研究助理的 Outcome 不是「Agent 說摘要完成了」，而是「摘要真的使用三個合格來源、引用可以打開，而且尚未跳過人工核准」。
+
+接著建立完整的 **Eval Case（評測案例）**。它像一張連規則都寫好的考題；input 只是其中一格。
+
+| Eval Case 的部分 | 研究助理例子 | 為什麼要留 |
+|---|---|---|
+| **Input（輸入）** | `整理這三個主題` | 告訴系統要做什麼 |
+| **Initial State（初始狀態）** | 三個候選來源、尚未核准 | 固定開始時的環境 |
+| **Success Criteria（成功條件）** | 三個來源都能開啟；摘要包含可核對引用 | 說清楚怎樣算成功 |
+| **Forbidden Actions（禁止行為）** | 不得捏造來源；不得自行送出 | 即使答案漂亮也不能做的事 |
+| **Optional Reference Answer（選用參考答案）** | 一份人工核對過的摘要 | 有需要時提供比較方向；不是每題都必須有 |
+| **Grader（評分方法）** | 程式檢查連結與數量，人檢查摘要是否忠於來源 | 決定誰照什麼規則評分 |
+| **Case Metadata（案例資訊）** | case ID、版本、split、來源與標籤 | 讓同一題可以重跑和追蹤 |
+
+![完整 Eval Case 包含 Input、Initial State、Success Criteria、Forbidden Actions、Optional Reference Answer、Grader 與 Case Metadata；Input 只是其中一格](../resources/diagrams/eval-case-anatomy.png)
+
+把多個完整案例放在一起，叫做 **Eval Suite（評測組）**。替 Suite 留下版本，才能知道這次和上次是不是在考同一份題目。
+
+經人檢查、可重複使用的完整案例集合，本專案稱為 **Reviewed Eval Set（已審查評測集）**。外部資料有時寫 **Golden Set** 或 **Reference Set**，但這些名稱沒有跨供應商一致定義。看到它們時，要回到來源確認它是在說題目、答案、標準，還是整套資料。
+
+> **Golden／Reference Set 不只是 input，也不等於訓練資料或 Few-shot 範例。**它通常包含完整案例、條件、參考證據與評分方法；實際欄位仍要看當前專案的定義。
+
+最後再加入這些測量詞：
+
+| 名詞 | 白話意思 | 本章怎麼用 |
+|---|---|---|
+| **Trial（試跑）** | 同一題實際做一次 | 模型結果會變動時，同一個 case 要跑多次 |
+| **Baseline（基線）** | 改之前先量一次 | 提供新舊版本的比較起點 |
+| **Regression（退步）** | 新版本超過預先門檻地變差 | 同時檢查品質、成本、安全與可靠性 |
+| **Development Set（開發集）** | 平常可以看的練習題 | 每次修改後重跑並用失敗改善系統 |
+| **Holdout Set（保留集）** | 平常不偷看的最後考卷 | 只在 release candidate 或最後驗證時打開 |
+
+Anthropic 的 [Agent Eval 指南](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)把 task、trial、grader、trajectory 與 outcome 分開；OpenAI 的 [Graders API](https://platform.openai.com/docs/api-reference/graders?api-mode=chat)列出多種 grader。工具可以不同，但每份報告都應留下 dataset version、split、case ID、trial 次數、grader、Outcome、Trajectory 與 baseline。
+
+負責載入 cases、重跑 Agent、呼叫 grader 並保存結果的系統，是前面定義過的 Evaluation Harness。它可以呼叫 Agent Harness，但兩者的責任不同：一個讓工作安全執行，一個讓測試可以重複比較。
+
+## 🔎 Observability：出錯時看得見是哪一步
+
+Observability 像在透明積木盒外面看每一格。它不是把所有內容公開，而是留下能除錯的 trace、log 與 metrics，並遮住密碼、個資和客戶資料。
+
+在研究助理案例裡，一次 **Trace（追蹤紀錄）**要能回答：查了哪些來源、哪個工具失敗、重試幾次、花了多少時間，以及為什麼停在人工核准前。Trace 能解釋 Trajectory，但「記錄很多」不等於「結果正確」；Outcome 仍要交給 Eval 檢查。
+
+## 🛑 Approval、Checkpoint、Resume 與 Recovery：先停，再安全繼續
+
+研究助理準備送出摘要時，先進入 Human Approval。這不是請人從頭重做，而是把摘要、來源與風險一起交給人核對。
+
+核准前先保存 Checkpoint。重新啟動後用 Resume 回到同一個 task；如果中間失敗，Recovery 決定要重試、補償、回到舊狀態，或交給人。任何會寄信、付款或寫資料的動作都要帶 Idempotency key，確保相同重試只產生一次外部效果。
+
+<a id="-上線四步eval--observability--approvalrecovery--deploy"></a>
+## 🛡 完整上線路線：Eval → Observability → Approval／Recovery → Deploy
+
+**Deploy（部署）**是把通過檢查的系統交給別人使用。它像開店前正式開門；開門不是成功證明，前面的測試、紀錄、煞車和復原方式才是。
+
+這四步不是成熟度徽章，而是同一次修改要走完的檢查路線：
+
+| 順序 | 先回答的問題 | 最少要留下的證據 | 沒通過時怎麼做 |
+|---:|---|---|---|
+| 1. **Eval** | 最後結果真的對嗎？中間有沒有走危險捷徑？ | Anthropic 建議先從 20–50 個代表真實工作的 cases 起步；這是實務起點，不是所有專案的硬性最低數。另記 Outcome、Trajectory、grader、成本與失敗門檻 | 先補案例或修行為，不進部署 |
+| 2. **Observability** | 壞掉時找得到哪一步嗎？ | task ID、trace／span、tool call、錯誤類型、延遲、token 與敏感資料遮罩 | 先讓失敗看得見，再改 Prompt 或模型 |
+| 3. **Approval／Recovery** | 高風險動作能先停下嗎？中斷後能安全續跑嗎？ | 人工核准點、版本化 checkpoint、resume 測試、idempotency key、拒絕／timeout／補償路線 | fail closed，停止自動執行並交給人 |
+| 4. **Deploy** | 前三項能在新版本重跑嗎？ | 服務是否活著與準備好、用量限制、回到舊版的方法、停止開關與版本紀錄 | 保留舊版或回到舊版，不把「服務有啟動」當成功 |
+
+**Outcome Eval** 要檢查外部世界的結果。例如 Agent 說「信已寄出」只是文字；測試環境真的只有一封信、收件者正確，才是 Outcome 通過。**Trajectory Eval** 則檢查它用了哪些工具、嘗試幾次、是否繞過核准、花多少 token。兩種一起看，才不會只因最後一句很漂亮就放行。
+
+案例先從真實失敗建立：每遇到一次錯誤，就留下去識別化的輸入、預期 Outcome、禁止動作與重現步驟。正式資料不能直接複製進公開 repo；必要時改成結構相同的假資料。
+
+## 🧭 OpenRouter、Pi、OpenCode、Orca、QM 到底差在哪？
+
+它們不是五個同類產品。把它們放到正確層，就不會混在一起：
+
+| 名稱 | 它是什麼 | 一句話記法 |
+|---|---|---|
+| [OpenRouter](https://openrouter.ai/docs/quickstart) | 模型 API 入口／Router | 幫程式連到不同模型，本身不是幫你改程式的 Agent |
+| [Pi](https://github.com/earendil-works/pi) | Agent toolkit 與 coding-agent CLI | 會呼叫模型和工具，把任務做完 |
+| [OpenCode](https://github.com/anomalyco/opencode) | 開源 coding agent | 在程式碼專案裡讀、改、測 |
+| [Orca](https://github.com/stablyai/orca) | 多 Agent 開發環境 | 讓多個 coding agent 在隔離 worktree 平行工作與比較 |
+| [QM](https://github.com/yc-software/qm) | 團隊用的多 Agent harness | 管理多人、workspace、權限、排程與協作 |
+
+> **模型入口 → Agent runtime → 多 Agent 協作平台**。這三層可以互相搭配，但不能互相代替。
+
+## 🛠 動手練習
+
+先走四個核心練習。不要先把檔案改名或重抄一份；直接跑測試，再只改一個小地方。
+
+### 核心練習 1：Eval
+
+**成果：**用固定案例與規則檢查 Agent，看到哪一題退步。
+
+```bash
+cd examples/stage-7/02-eval
+python test.py
+```
+
+### 核心練習 2：Observability
+
+**成果：**看到一次執行的步驟、延遲、token 與錯誤。
+
+```bash
+cd examples/stage-7/03-observability
+python test.py
+```
+
+### 核心練習 3：Approval、Checkpoint 與 Recovery
+
+**成果：**敏感動作先停在人工核准點；重新啟動後從 checkpoint resume，相同 idempotency key 不會重複執行。
+
+```bash
+cd examples/stage-7/06-safe-execution
+python test.py
+```
+
+### 核心練習 4：Deploy
+
+**成果：**把 Agent 包成有 `/health` 與 `/chat` 的 API，再用測試確認錯誤狀態。
+
+```bash
+cd examples/stage-7/05-deploy
+python test.py
+```
+
+<details markdown="1">
+<summary>🛠 展開：練習順序、付費路徑與觀察重點</summary>
+
+1. 每題先跑 `python test.py`；這條路使用 mock，不需 API 金鑰。
+2. Eval、Observability 與 Deploy 測試通過後，才依 README 選本機 Ollama 或 Anthropic 路徑；Safe Execution 全程使用假動作，不需要模型。
+3. 只改一件事：評分規則、trace 欄位、核准結果、checkpoint 損壞情境或 API 錯誤處理。
+4. 再跑測試，寫下「改了什麼、哪個結果變了、是否超過預算」。
+5. 核心練習 4 的 Docker 是加分項；先用 FastAPI 測試確認行為，再啟動服務。
+
+</details>
+
+## 🧭 進階選修（入口保持可見）
+
+### 選修 A：Multi-Agent 辯論
+
+**成果：**兩個 Agent 分別提出正反意見，第三個 Agent 依規則裁決。只有單一 Agent baseline 已有 Eval，且角色真的需要分開時再做。
+
+[打開 Multi-Agent 範例](../examples/stage-7/01-multi-agent-debate/README.md)
+
+### 選修 B：Streaming 與 Prompt caching
+
+**成果：**比較 streaming 與 prompt caching 的行為；成本效果必須自己量，不把 cache 當成安全或復原機制。
+
+[打開 SDK 進階範例](../examples/stage-7/04-sdk-advanced/README.md)
+
+<details markdown="1">
+<summary>🧪 展開：兩個選修的直接測試命令</summary>
+
+```bash
+cd examples/stage-7/01-multi-agent-debate
+python test.py
+
+cd ../04-sdk-advanced
+python test.py
+```
+
+</details>
+
+## 🧪 推薦小專案：有收據的研究助理
+
+先做一個單一 Agent 版本：
+
+1. 找三個來源，保留 URL 與擷取時間。
+2. 只根據來源寫短摘要；找不到就明寫不知道。
+3. 在「發布摘要」前停下來，讓人核准、修改或拒絕。
+4. 保存 checkpoint；模擬程式中斷後 resume。
+5. 用 idempotency key 證明同一次發布重跑也只寫入一次。
+
+交出 **execution receipt（執行收據）**。記下 task ID、Outcome、Trajectory、工具與來源。再記耗時、token、錯誤、checkpoint 版本與人工核准。先用 5 個 development cases 做 baseline，再把真實失敗加入版本化 suite。結果變差時，重跑足夠 trials，比對預先門檻並檢查失敗案例；單次隨機失敗不等於已證實退步。
+
+單一 Agent 穩定後，才考慮拆出「找資料」與「審查」角色，比較品質、成本與延遲。
 
 ## 📊 Agent Benchmark Landscape：怎麼看，不要只看排行榜 + ⚠ Reward-Hacking 警告
 
-挑 model / 打造 agent 之前、你會想看 benchmark 數字——但 **2026-04 UC Berkeley 發現 8 個主流 agent benchmark 全部可被 reward-hack 到 ~100%**。下面是 2026 leaderboard 現況 + 怎麼看不被騙。
+**Benchmark（基準測試）**像統一考卷。它能幫你比較，但不能保證你的真實工作也會一樣好。
 
-### 主流 Agent Benchmark 2026-05 SOTA
+看任何分數前，先問五件事：
 
-| Benchmark | 領域 | 2026-05 SOTA | 領先 Model |
-|---|---|---|---|
-| [**SWE-bench Verified**](https://www.swebench.com/) | 軟工 / code agent | **88.6%** | Claude Opus 4.8 |
-| [**Terminal-Bench**](https://github.com/laude-institute/terminal-bench) | terminal 任務 | 領先 | Claude Opus 4.8 |
-| **GAIA** | general assistant | **74.6%** | Claude Sonnet 4.5（Princeton HAL）|
-| [**WebArena**](https://github.com/web-arena-x/webarena) | web 導航 | **68.7%** | Claude Mythos Preview |
-| [**OSWorld**](https://github.com/xlang-ai/OSWorld) | OS-level 桌面控制 | **76.26%**（SOTA、superhuman vs human 72.36%）| OpenAI CUA 38%、多數 frontier 仍卡 50% 以下 |
-| [**τ-bench**](https://github.com/sierra-research/tau-bench) | tool use 多輪對話 | （較難 hack）| Anthropic / OpenAI 領先 |
-| **RE-bench** | research engineering | （較難 hack、接近人類 baseline）| Frontier model |
-
-> **Mythos-class 層級（2026-06-09 發布、2026-06-12 暫停存取）**：[**Claude Fable 5**](https://www.anthropic.com/news/claude-fable-5-mythos-5)（`claude-fable-5`，Mythos-class、定位在 Opus 之上）曾短暫成為對外開放的最高能力 Claude 層級，與姊妹版 Claude Mythos 5（`claude-mythos-5`，部分安全措施放寬、限定核准客戶）同日發布。⚠️ **2026-06-12 美國出口管制指令暫停了兩者全部存取（[狀態頁](https://status.claude.com/) · [官方聲明](https://www.anthropic.com/news/fable-mythos-access)），目前無法使用且無恢復時程。** 上表數字維持原本歸屬的 model；Fable 5 官方 benchmark 數字始終未公布，故未列入。**Opus 4.8 仍為 Opus-class 旗艦，也是目前可用的最高層級。**
-
-→ 詳細排行 + 即時更新：[Agent Benchmark Leaderboard 2026](https://benchmarkingagents.com/agent-benchmarks/)、[Rapid Claw AI Agent Framework Scorecard 2026](https://rapidclaw.dev/blog/ai-agent-benchmarks-2026)
-
-### ⚠ Berkeley 2026-04 Reward-Hacking 警告
-
-[**UC Berkeley RDI 2026-04-12 報告**](https://rdi.berkeley.edu/blog/trustworthy-benchmarks-cont/)：用 automated scanning agent 系統性 audit **8 個主流 benchmark**（SWE-bench / WebArena / OSWorld / GAIA / Terminal-Bench / FieldWorkArena / CAR-bench 等）、**每個都能 reward-hack 到接近 100%、agent 一個 task 都不用真正解**。
-
-意思：leaderboard 上「Claude 87.6% / GPT 85.0%」這種數字、可能其中 X% 是 hack 出來的、不是真的解 task。
-
-### 怎麼看 benchmark 不被騙
-
-| 看數字方式 | 推薦 |
+| 要看什麼 | 白話問題 |
 |---|---|
-| 只看 leaderboard top | ❌ 上面 8 個都被證實可 hack |
-| 看 task-level success rate breakdown | ✅ 多數 hack 集中少數 task |
-| 跑你自己的 hold-out test set | ✅✅ 最可靠、production agent 必做 |
-| 看 trajectory / log 是否真的解 task | ✅ 區分 reward hacking vs genuine solve |
-| 看多個 benchmark + 自己 use case | ✅ 不依賴單一指標 |
+| Task | 考題跟我的工作像嗎？ |
+| Environment | 模型拿到哪些工具、資料與權限？ |
+| Grader | 誰評分？規則有沒有漏洞？ |
+| Trajectory | 它真的完成任務，還是只碰巧拿到分數？ |
+| Hold-out | 它有沒有通過我自己沒拿來調整的測試？ |
 
-**哪些 benchmark 較難 hack（2026-05）**：
-- **τ-bench** — 多輪對話 + tool use、reward function 較密集
-- **RE-bench** — research engineering 真實任務
-- **你自己的 production eval set** ⭐ 永遠是最可靠的
+**Reward hacking（獎勵鑽漏洞）**就是「拿到高分，卻沒有真的完成目的」。像小孩發現只要按一下鐘就有糖，於是一直按鐘，卻沒做原本的任務。
 
-> 💡 **production agent 的 eval 紀律**：
-> - 不要把外部 benchmark 數字當 ground truth、它告訴你「上限」不是「真實表現」
-> - 你自己的 eval set（內部 hold-out test）才是上線決策的依據
-> - 每次 model upgrade → 跑內部 eval set 驗證、不只看廠商公布的 benchmark 提升
-> - 接 [langfuse](https://github.com/langfuse/langfuse) / [promptfoo](https://github.com/promptfoo/promptfoo) 把 eval 自動化、每次 deploy 都跑
+<details markdown="1">
+<summary>📊 展開：可參考的 Benchmark 與 production 評測方法</summary>
 
-> 📊 **observability 認一個可攜標準 + 兩個評估觀念**：(1) **OpenTelemetry GenAI 慣例**（`gen_ai.*` semantic conventions）——langfuse / Arize Phoenix / Helicone 都吐 OTel-相容 span，認這層才不被單一工具綁死；OTel-native 的 [Arize Phoenix](https://github.com/Arize-ai/phoenix)（★10k）可看。(2) **pass^k**（同一題連對 k 次的機率 = 可靠度，不是只看過一次）+ [τ²-bench](https://github.com/sierra-research/tau2-bench)。(3) 多 agent 失敗有現成詞彙：**MAST**（[arXiv 2503.13657](https://arxiv.org/abs/2503.13657)、14 種失敗模式分 3 類）。
+- [SWE-bench](https://www.swebench.com/)：真實軟體問題。
+- [Terminal-Bench](https://www.tbench.ai/)：終端機任務；從官方入口選資料集與 [Harbor](https://docs.harborframework.com/) 執行方式。[1.x repository](https://github.com/harbor-framework/terminal-bench-1) 是舊版入口，重現舊結果時才依該版本操作。
+- [OSWorld](https://github.com/xlang-ai/OSWorld)：桌面環境操作。
+- [τ-bench](https://github.com/sierra-research/tau2-bench)：工具與多輪互動；同一 repository 已包含 τ³ 的語音與知識任務。先固定 release、domain 與 task split；`banking_knowledge` 在 v1.0.1 修正前後的分數不可直接比較。
+- [GAIA](https://huggingface.co/gaia-benchmark)：一般助理任務。
 
-## 🎯 常用 Multi-Agent / Production 工具推薦（按用途分類）
+比較前記錄 dataset／task split、harness commit、grader 版本、模型設定與 trial 次數；版本不同時不要直接拼成同一張排名表。
 
-不知道從哪挑工具？下面是 2025-2026 業界常用搭配——**挑入口看「場景」、想深入點連結看 repo**：
+不要把頁面上的某個 SOTA 分數抄成永久事實。上線判斷應以自己的案例、rubric、完整 trajectory、成本與延遲為主。每次換模型、Prompt、Tool 或 Harness，先重跑 development／reference cases；frozen holdout 不拿來逐次調整，只在 release candidate 或最後驗證時打開。
 
-| 場景 | 推薦工具 | 為什麼 |
-|---|---|---|
-| **第一次寫 multi-agent**（最快上手）| [crewAI](https://github.com/crewAIInc/crewAI) | role-based、幾行 code 跑起來、production pattern 直接 |
-| **想要 group debate / brainstorm pattern** | [AutoGen](https://github.com/microsoft/autogen) | GroupChat 自由辯論、Microsoft 出品 |
-| **production 要 audit trail / checkpoint / human-in-loop** | [LangGraph](https://github.com/langchain-ai/langgraph) | state machine、控制最完整 |
-| **eval 標準化**（CI / regression 必裝）| [promptfoo](https://github.com/promptfoo/promptfoo) ⭐ | YAML config、跨模型比較、★ 22k+ |
-| **eval + observability 同平台** | [langfuse](https://github.com/langfuse/langfuse) ⭐ | OSS、tracing + eval + prompt mgmt、★ 28k+ |
-| **不改程式、快速 instrumentation** | [Helicone](https://github.com/Helicone/helicone) | proxy 中介、不綁 framework |
-| **全 stack 在 LangChain** | [LangSmith](https://www.langchain.com/langsmith)（商業）| LangChain 官方 observability |
-| **打造 Claude agent**（programmatic）| [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python) ⭐ | Anthropic 官方 agent SDK、跟 Claude Code 同 runtime |
-| **Deploy agent 成 API service** | [BentoML](https://github.com/bentoml/BentoML) | 最完整、Docker + serving |
-| **自架開源 LLM**（取代付費 API）| [vLLM](https://github.com/vllm-project/vllm) | 高吞吐量、★ 79k+ |
-| **Fine-tune 開源 LLM** | [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) | 100+ 模型統一 SFT/DPO/PPO/GRPO、Web UI 零程式碼、中文社群最廣、★ 70k+ |
-
-**建議入手順序**：
-1. 第一個 multi-agent：**crewAI**（role-based、最簡單）
-2. 加 eval：**promptfoo**（YAML、CI 整合）
-3. 加 observability：**langfuse**（OSS、完整）
-4. Production 升級：換 **LangGraph**（control 強）+ **BentoML**（deploy）
-5. 進階：自架 LLM 接 **vLLM**、fine-tune 用 **LLaMA-Factory**
+</details>
 
 ## 🎯 精選 Projects（範本 / SDK / 工具 collection）
 
-按用途分類、27 個項目一張表搞定。**挑入口看「適合誰」、想深入點連結看 repo**。
+按用途選，星等不是 GitHub stars。兩份新文件供單 Agent baseline 後比較；三星依文件教學價值，未實跑 API。
 
-| 分類 | Project | ⭐ | 適合誰 | 為什麼推薦 / 備註 |
-|---|---|---|---|---|
-| **Multi-Agent Orchestration** | [microsoft/autogen](https://github.com/microsoft/autogen) | ⭐⭐⭐⭐⭐ | 想要 GroupChat 自由 debate pattern | Stage 4 介紹過、production 場景再回頭看 multi-agent 辯論 / brainstorming 模式 |
-| | [crewAIInc/crewAI](https://github.com/crewAIInc/crewAI) | ⭐⭐⭐⭐⭐ | 想要 role-based 流水線 | 角色式 multi-agent（research → writer → reviewer），最簡單 production pattern |
-| | [langchain-ai/langgraph](https://github.com/langchain-ai/langgraph) | ⭐⭐⭐⭐⭐ | 需要 audit trail / checkpoint / human-in-the-loop | state machine 路線、production 控制最強 |
-| **Eval Frameworks** | [promptfoo](https://github.com/promptfoo/promptfoo) ⭐ | ⭐⭐⭐⭐⭐ | 把 eval 流程標準化、CI 整合 | YAML config、跨模型比較。★ 22k+、MIT |
-| | [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) | ⭐⭐⭐⭐ | 學術 benchmark 主張（MMLU / HellaSwag / GSM8K）| 學術等級。★ 12k+、MIT |
-| | [openai/evals](https://github.com/openai/evals) | ⭐⭐⭐⭐ | OpenAI 專屬 eval / 想回饋上游 | ★ 18k+ |
-| **Observability** | [langfuse](https://github.com/langfuse/langfuse) ⭐ | ⭐⭐⭐⭐⭐ | 自架 production observability | OSS LangSmith 替代、traces + sessions + evals + prompt mgmt。★ 28k+、MIT |
-| | [LangSmith](https://www.langchain.com/langsmith)（商業）| ⭐⭐⭐⭐ | 全 stack 在 LangChain / LangGraph 上 | LangChain 官方、只有 hosted 版 |
-| | [Helicone](https://github.com/Helicone/helicone) | ⭐⭐⭐⭐ | 不想改程式、快速上 instrumentation | proxy 中介、順便拿到 logging + caching。★ 5.7k+、Apache 2.0 |
-| | [weave (W&B)](https://github.com/wandb/weave) | ⭐⭐⭐⭐ | 團隊已在用 W&B 做 ML 實驗追蹤 | W&B tracing + eval、跟 wandb 整合 |
-| | [comet-ml/opik](https://github.com/comet-ml/opik) | ⭐⭐⭐⭐ | eval + observability 同一個開源平台 | 追蹤 LLM / agent 做了什麼、追蹤實驗、跑品質檢查（eval）。★ 19k+、Apache 2.0 |
-| | [pydantic/logfire](https://github.com/pydantic/logfire) | ⭐⭐⭐⭐ | 用 OpenTelemetry 標準追蹤 agent / LLM 呼叫 | 看清楚並 debug 你的 agent / LLM 呼叫做了什麼；Pydantic 團隊出品、建在 OpenTelemetry 標準上。★ 4k+、MIT |
-| **Safety / Guardrails** | [NVIDIA-NeMo/Guardrails](https://github.com/NVIDIA-NeMo/Guardrails) | ⭐⭐⭐⭐ | 想在 agent 的輸入 / 輸出加上安全規則 | 包在 LLM app 外的安全規則——讓它不離題、擋 jailbreak、過濾不當輸出。★ 6k+、Apache 2.0 |
-| **Anthropic SDK 進階** | [anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python) | ⭐⭐⭐⭐⭐ | 直接基於 Claude API 做應用 | 官方 Python SDK：streaming / async / tool use / prompt caching / batches / files |
-| | [anthropic-sdk-typescript](https://github.com/anthropics/anthropic-sdk-typescript) | ⭐⭐⭐⭐ | TypeScript / Node / web app | Python SDK 的 TS 版 |
-| | [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python) ⭐ | ⭐⭐⭐⭐⭐ | 打造 Claude-based agent 而非只 API | 內建 tool use loop / file access / sandbox / subagent 編排；跟 Claude Code 同 runtime、想看內部運作直接讀 source。★ 6.9k+、MIT |
-| | [claude-agent-sdk-typescript](https://github.com/anthropics/claude-agent-sdk-typescript) | ⭐⭐⭐⭐ | Node / web app 環境 Claude agent | Claude Agent SDK TS 版。★ 1.6k+ |
-| | [Anthropic Cookbook（進階）](https://github.com/anthropics/anthropic-cookbook) | ⭐⭐⭐⭐ | 想看官方進階 SDK pattern | 特別是 `prompt_caching.ipynb` / `tool_use/` / `multimodal/` 三個 notebook |
-| **Structured Output** | [BoundaryML/baml](https://github.com/BoundaryML/baml) | ⭐⭐⭐⭐ | 想穩定拿到任何模型輸出的可靠 JSON | 一個專用小語言、幫你從 LLM 穩定取得經過檢查的 JSON；支援 Claude / OpenAI / 本機模型、7 種程式語言。★ 8k+、Apache 2.0 |
-| **Deployment** | [BentoML](https://github.com/bentoml/BentoML) | ⭐⭐⭐⭐ | 把 agent 包成 production API service | Docker + serving framework。★ 8k+、Apache 2.0 |
-| | [LangServe](https://github.com/langchain-ai/langserve) | ⭐⭐⭐⭐ | LangChain agent 快速 deploy | 底層 FastAPI |
-| | [vLLM](https://github.com/vllm-project/vllm) | ⭐⭐⭐⭐ | 自架開源 LLM 取代付費 API | 高吞吐量 LLM serving、Llama / Qwen 等。★ 79k+、Apache 2.0 |
-| **中文 deploy / fine-tune** | [datawhalechina/self-llm](https://github.com/datawhalechina/self-llm) | ⭐⭐⭐⭐ | 中文團隊要自架開源 LLM | training-to-deployment 完整中文指南、Qwen / Llama / GLM / 多模態。★ 30k+、Apache 2.0 |
-| | [hiyouga/LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) | ⭐⭐⭐⭐⭐ | 要 fine-tune 開源 LLM（不只 prompt eng）| 100+ 模型統一 SFT/DPO/PPO/GRPO、Web UI 零程式碼、中文社群最廣。★ 70k+、Apache 2.0 |
-| **Multi-Agent 案例研究** | [geekan/MetaGPT](https://github.com/geekan/MetaGPT) | ⭐⭐⭐⭐⭐ | 想看角色分工 + artifact 交接 pattern | SOP-based PM / Architect / Engineer multi-agent team、PRD → 設計 → code 一路產出。★ 67k+、MIT |
-| | [OpenBMB/ChatDev](https://github.com/OpenBMB/ChatDev) | ⭐⭐⭐⭐ | 想看 agent debate / peer-review pattern | 對話式軟體開發、agents 在 design / code / test 互相辯論。★ 33k+、Apache 2.0、有 zh README |
-| | [princeton-nlp/SWE-agent](https://github.com/princeton-nlp/SWE-agent) | ⭐⭐⭐⭐ | 理解為什麼 tool 設計 > prompt tuning | Agent-Computer Interface (ACI) 設計思路、Princeton paper-backed、SWE-Bench 領先方法。★ 19k+、MIT |
+<table>
+  <thead>
+    <tr><th scope="col">分類</th><th scope="col">Project／文件</th><th scope="col">教學適合度</th><th scope="col">適合做什麼</th><th scope="col">先知道的限制</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="rowgroup" rowspan="5">Orchestration／Workflow</th><td><a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic — Building Effective Agents</a></td><td>⭐⭐⭐⭐⭐</td><td>先學簡單 workflow，再理解 Agent</td><td>是設計指南，不是可直接部署的框架</td></tr>
+    <tr><td><a href="https://openai.github.io/openai-agents-python/multi_agent/">OpenAI Agents SDK orchestration</a></td><td>⭐⭐⭐⭐⭐</td><td>比較 manager 與 handoff</td><td>範例以 OpenAI Agents SDK 為主</td></tr>
+    <tr><td><a href="https://developers.openai.com/api/docs/guides/responses-multi-agent">OpenAI Responses Multi-agent（官方文件）</a></td><td>⭐⭐⭐</td><td>已完成單 Agent 者選讀：模型分派獨立任務</td><td>Beta；各自 context、共用模型與工具；不同於 SDK manager／handoff</td></tr>
+    <tr><td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/">Microsoft Agent Framework orchestrations</a></td><td>⭐⭐⭐⭐</td><td>順序、平行、handoff、群聊與人工核准</td><td>先確認套件版本與目前預覽狀態</td></tr>
+    <tr><td><a href="https://github.com/langchain-ai/langgraph">LangGraph</a></td><td>⭐⭐⭐⭐⭐</td><td>需要 state、checkpoint 與 human-in-the-loop</td><td>抽象較多，第一個 Agent 不必從這裡開始</td></tr>
+  </tbody>
+  <tbody>
+    <tr><th scope="rowgroup" rowspan="6">Eval／Observability</th><td><a href="https://platform.claude.com/docs/en/test-and-evaluate/develop-tests">Anthropic — Develop tests and evaluations</a></td><td>⭐⭐⭐⭐⭐</td><td>建立成功標準與 grader</td><td>需自行準備代表真實工作的案例</td></tr>
+    <tr><td><a href="https://github.com/promptfoo/promptfoo">promptfoo</a></td><td>⭐⭐⭐⭐⭐</td><td>把 Eval 放進 CI</td><td>設定檔不能代替好的 rubric</td></tr>
+    <tr><td><a href="https://github.com/open-telemetry/semantic-conventions-genai">OpenTelemetry GenAI conventions</a></td><td>⭐⭐⭐⭐</td><td>學可攜的 trace 欄位</td><td>規格仍演進，各平台支援度不同</td></tr>
+    <tr><td><a href="https://github.com/langfuse/langfuse">Langfuse</a></td><td>⭐⭐⭐⭐⭐</td><td>trace、Eval 與 prompt 管理</td><td>MIT 不含 ee/ 等企業目錄；自架仍需維運與資料治理</td></tr>
+    <tr><td><a href="https://github.com/Arize-ai/phoenix">Arize Phoenix</a></td><td>⭐⭐⭐⭐</td><td>OpenTelemetry 與本機分析</td><td>ELv2 限制對外託管服務；先設計敏感資料遮罩</td></tr>
+    <tr><td><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic — Demystifying evals for AI agents</a></td><td>⭐⭐⭐⭐⭐</td><td>一起檢查 Outcome、Trajectory 與 grader</td><td>案例仍要從自己的真實工作與失敗建立</td></tr>
+  </tbody>
+  <tbody>
+    <tr><th scope="rowgroup" rowspan="7">Harness／Sandbox／Deploy</th><td><a href="https://github.com/anthropics/claude-agent-sdk-python">Claude Agent SDK Python</a></td><td>⭐⭐⭐⭐⭐</td><td>閱讀工具迴圈、權限與 subagent 實作</td><td>以 Claude runtime 為中心</td></tr>
+    <tr><td><a href="https://ai.google.dev/gemini-api/docs/antigravity-agent">Google Antigravity agent（官方文件）</a></td><td>⭐⭐⭐</td><td>已完成單 Agent 者選讀：sandbox、持久檔案與 code</td><td>Public Preview；網路與工具權限仍須限制，不能自動保證安全</td></tr>
+    <tr><td><a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a></td><td>⭐⭐⭐</td><td>閱讀 plugin-based harness 架構</td><td>Developer preview；可能有破壞性變更</td></tr>
+    <tr><td><a href="https://openai.github.io/openai-agents-python/human_in_the_loop/">OpenAI Agents SDK — Human-in-the-loop</a></td><td>⭐⭐⭐⭐⭐</td><td>暫停敏感工具、保存 RunState 並 resume</td><td>保存的 state 也可能含 context 與 runtime metadata，要按敏感資料管理</td></tr>
+    <tr><td><a href="https://docs.langchain.com/oss/python/langgraph/interrupts">LangGraph — Interrupts</a></td><td>⭐⭐⭐⭐⭐</td><td>核准、checkpoint、resume 與冪等副作用</td><td>production 要使用 durable checkpointer，不能只靠記憶體</td></tr>
+    <tr><td><a href="https://github.com/sandbaseai/sandbase-harness">SandBase Harness</a></td><td>⭐⭐⭐⭐</td><td>看 self-hosted runtime 怎麼保存工作、接 MCP、停下來等人批准，並留下 audit／replay 紀錄</td><td>仍是 v0.x；隔離強度取決於 local／Docker／Kubernetes／Worker backend 與部署設定，不是固定的 microVM 保證</td></tr>
+    <tr><td><a href="https://github.com/bentoml/BentoML">BentoML</a></td><td>⭐⭐⭐⭐</td><td>把應用包成服務與容器</td><td>部署框架不會自動補齊 Eval 和 Guardrail</td></tr>
+  </tbody>
+  <tbody>
+    <tr><th scope="rowgroup" rowspan="5">Multi-Agent 案例</th><td><a href="https://github.com/crewAIInc/crewAI">crewAI</a></td><td>⭐⭐⭐⭐</td><td>理解角色式任務分工</td><td>角色多不等於答案一定更好</td></tr>
+    <tr><td><a href="https://github.com/stablyai/orca">Orca</a></td><td>⭐⭐⭐⭐</td><td>在隔離 worktree 平行跑 coding agents</td><td>平行結果仍需要人審查與選擇</td></tr>
+    <tr><td><a href="https://github.com/yc-software/qm">QM</a></td><td>⭐⭐⭐⭐</td><td>觀察團隊 workspace、權限與排程</td><td>組織級部署比個人 CLI 複雜</td></tr>
+    <tr><td><a href="https://github.com/AMAP-ML/LongHorizon-Harness">LongHorizon-Harness</a></td><td>⭐⭐⭐</td><td>看 Manager／Executor／Auditor 分工</td><td>專案很新，長期維護紀錄仍有限</td></tr>
+    <tr><td><a href="https://github.com/cft0808/edict">Edict</a></td><td>⭐⭐⭐</td><td>用中文案例理解規劃、審查與執行角色</td><td>特殊角色命名是案例設計，不是業界標準</td></tr>
+  </tbody>
+</table>
 
-> 🌳 **Claude 原生 subagent 機制**（不用 framework 也能 multi-agent）見 [Stage 5.5](05-claude-code-ecosystem.md#55--subagentsclaude-code-原生-multi-agent-機制-2025-新功能)。本 stage 重 framework / production；Stage 5.5 重 markdown-based subagent 編排。
+<small>既有查核：2026-09-13 UTC；新文件查核：2026-10-02 UTC</small>
 
 ## ✅ Stage 7 之後的自我檢查
 
-你能不能：
-- [ ] 設計一個 multi-agent 系統，協作協定講得清楚
-- [ ] 在 CI 跑自動 eval pipeline
-- [ ] 把 observability（tracing）接到 production agent
-- [ ] 在真實 workload 上量測 prompt caching 前後的成本差異
-- [ ] 把 agent deploy 到雲端（任何 provider）
+- [ ] 我能分清 Outcome 與 Trajectory，並用兩者檢查同一個 case。
+- [ ] 我有從真實失敗建立的固定 Eval cases，不只看一次漂亮輸出。
+- [ ] 我能找到一次執行的 trace、錯誤、延遲與 token。
+- [ ] 高風險工具有最小權限與人工核准；沒有核准時會 fail closed。
+- [ ] 我能從 checkpoint resume，並證明相同 idempotency key 不會重複副作用。
+- [ ] 我能展示 execution receipt，並說明何時停止、復原或 rollback。
+- [ ] 我能用一句話分清 OpenRouter、Agent runtime 與多 Agent 平台，也知道單一 Agent 是預設選擇。
 
-如果都可以 → 先進 [**Stage 7.5 — 進階 Agentic 概念地圖**](07.5-advanced-agentic-concepts.md)（1 週、不寫 code、建立 frontier 概念地圖、定位業界還在討論哪些進階概念），再進 [**Stage 8 — Agent Interfaces**](08-agent-interfaces.md)（**兩 track 共用 hub**）學 agent 怎麼跟非 API 世界互動（Computer Use / Browser Use / Sandbox）。或挑一個[特化分支](../README.md#️-學習地圖兩條學習路徑)、或回過頭來貢獻這份 repo。
-
-## 💡 接下來
-
-你已經有基礎能力了。接下來 6-12 個月應該專注在：
-1. **挑一個 production 系統** 從 prototype 推到 production
-2. **回饋上游**（LangGraph、AutoGen、MCP servers、Anthropic cookbook）
-3. **讀論文**——agent 研究進展很快
-4. **做出看得到的東西**——開源一個真的工具、不要只停留在寫教學
+完成後，進入 [Stage 7.5 — 進階 Agentic 概念地圖](07.5-advanced-agentic-concepts.md)，再到 [Stage 8 — Agent Interfaces](08-agent-interfaces.md)。如果其中一項還說不清楚，回到對應練習，只改一件事再測一次。

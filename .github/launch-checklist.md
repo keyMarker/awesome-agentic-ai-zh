@@ -6,24 +6,24 @@
 
 ## ✅ Pre-launch（已完成）
 
-- [x] Phase 1-5 內容 ship（134 entries、style guide、walkthrough、Mermaid 圖）
+- [x] Phase 1–5 初版內容 ship（當時快照：134 entries、style guide、walkthrough、Mermaid 圖）
 - [x] `.github/` issue + PR template
-- [x] `resources/style-guide.md` zh + en
-- [x] `scripts/check-links.py` + `refresh-stars.py` 可跑
-- [x] CI lint workflow（zh-Hans slip + overclaim 自動檢查；每月跑 link-rot + star-drift）
+- [x] `resources/style-guide.md` 繁中 + 簡中 + 英文
+- [x] Required PR gate、連結檢查與 repository freshness 檢查可跑
+- [x] CI 檢查三語鏡像、用詞、連結、易變資訊、圖片與測試；Content Health 定期整理證據，不自動合併正文
 
 ## 🟡 Pre-launch（一次性手動 setup）
 
-- [ ] **GitHub Pages**：repo Settings → Pages → Source: **GitHub Actions**
-  - 啟用後，`.github/workflows/docs.yml` 推 main 會自動 build mkdocs（`/` 首頁）+ mdBook（`/book/`）並 deploy 到 `https://wenyuchiou.github.io/awesome-agentic-ai-zh/`（單一 workflow 擁有 Pages）
+- [x] **GitHub Pages**：Source 已使用 **GitHub Actions**；`.github/workflows/docs.yml` 推 main 會 build mkdocs（`/`）+ mdBook（`/book/`），由單一 workflow 部署到 `https://wenyuchiou.github.io/awesome-agentic-ai-zh/`
 - [ ] **GitHub Discussions**：repo Settings → Features → enable Discussions
   - Categories 建議：
     - 🙋 Q&A — 學習問題
     - 💡 Project nominations — 推薦新 project（先討論再 PR）
     - 📚 Stage discussion — 每個 stage 一個 thread
     - 🎯 Show & tell — 走完 stage 的人 share 自己的成果
-- [ ] **第一次 PDF release**：本地跑 `bash scripts/build-pdf.sh`，把 `dist/awesome-agentic-ai-zh.pdf` 上傳到 GitHub Release v1.0
-- [ ] **GitHub Releases**：以 `phase-5` tag 為起點建第一個 release，附 PDF
+- [x] **`release` Environment**：已建立並要求 `WenyuChiou` 人工批准；workflow 也會在缺少 required reviewer 時 fail closed
+- [ ] **第一次三語 PDF Release**：從 Actions 手動啟動 `Trilingual Release`，下載 candidate artifact，確認繁中／簡中／英文三份 PDF 後才批准 `release` Environment
+- [ ] **Calendar Release**：使用 `vYYYY.MM.DD`（同日第二版加 `-2`）；一個 Release 同時放三語 notes 與三份固定命名 PDF
 
 ## 🟢 Soft launch（小範圍宣傳）
 
@@ -58,7 +58,7 @@
 這份是**參考節奏，不是 SLA**——能做就做、忙起來放著也沒關係。社群開放型 repo 不需要強制定期維護。
 
 - 有空時：review issue / 合併 PR
-- 偶爾跑：CI 已設定每月自動跑 link rot + star drift（被動的、不用人工）
+- 自動證據：Content Health 每週查連結與 repository 狀態，每月再查模型／產品 freshness；不自動改寫或合併教材
 - 想做的時候：加幾個新 entry、清掉幾個 archived repo
 - 不必排定期程：phase milestone、新增 branch 等大改——有 traction 訊號再做
 

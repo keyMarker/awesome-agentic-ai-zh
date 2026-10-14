@@ -5,6 +5,7 @@
 After finishing a track, **build something yourself** — this file is not a tutorial, not a walkthrough, and there is no model answer. Its purpose is to turn "I read the roadmap" into "I have something I can show + a grade I gave myself."
 
 **How to use this file**:
+
 1. Pick **a problem you actually have** (work, research, daily life). Don't pick a toy problem — a capstone's value comes from being real.
 2. Check your track's "Prerequisites" and confirm the required stages have each passed their "Self-check".
 3. When done, **self-assess with the matching rubric** (4 levels: Not yet / Basic / Good / Excellent). Scoring honestly is more useful than scoring high.
@@ -16,11 +17,12 @@ After finishing a track, **build something yourself** — this file is not a tut
 
 ## Track A Capstone — CLI Power User
 
-**Prerequisites**: Stage 0–2 + A1 + A2 + Stage 5 + A3 have each passed their self-check (Stage 8 is a shared hub across both tracks — recommended, but it does not gate capstone entry; the Track A capstone focuses on the CLI workflow).
+**Prerequisites:** Stage 0–2 + A1 + A2 + Stage 5's Track A core 5.1–5.4 + A3 have each passed their self-check. Stage 5 sections 5.5–5.8 do not block entry. Stage 8 is recommended, but it does not block Capstone entry either; the Track A Capstone focuses on the CLI workflow.
 
 **Brief**: Assemble a CLI-agent workflow **you will reuse**, automating something you currently do by hand.
 
 **Requirements** (all mandatory):
+
 - A CLI agent (Claude Code or equivalent) at the core
 - At least **1** MCP server **or** a skill / command you wrote yourself
 - A clear input → a usable artifact out (not "chatting with it")
@@ -48,17 +50,19 @@ After finishing a track, **build something yourself** — this file is not a tut
 **Prerequisites**: Stage 0–8 (including Stage 3, 4, 5, 6, 7, 7.5, 8) have each passed their self-check.
 
 **Brief**: Design, build, and **evaluate** a small system that solves a concrete problem. Pick one:
+
 - **A. Multi-agent**: ≥ 2 cooperating agents with orchestration logic; or
 - **B. RAG system**: a complete retrieval + generation pipeline.
 
 **Requirements** (all mandatory):
+
 - Has tool use
 - Has one outward interface (CLI / API / chat — any one, mapping to Stage 8)
-- **Has explicit evaluation**: define ≥ 5 test cases yourself + measure a pass rate / qualitative assessment (this one is non-negotiable — the thing this curriculum most often skips is "verification")
+- **Has explicit evaluation**: version an Eval suite with at least 5 development cases + 3 frozen holdout cases; define success criteria, grader, trial count, and baseline, then report quantitative and qualitative results
 - **Failure-mode analysis**: write down under what conditions it breaks and how you'd know
 - An architecture sketch (a diagram or a paragraph describing components and data flow)
 
-**Deliverables**: a code repo + an architecture description + evaluation results (even just an N-cases / pass-rate table) + `README` + a reflection under 200 words (where the architecture call was wrong, what you'd do differently).
+**Deliverables**: a code repo + architecture description + Eval report (dataset version, development/holdout split, per-case results, trial count, baseline, and regression) + `README` + a reflection under 200 words.
 
 **Time**: 8–20 hours (not counting time spent learning the stages).
 
@@ -69,7 +73,7 @@ After finishing a track, **build something yourself** — this file is not a tut
 | Problem definition | Vague | Has a goal | Clear scope, acceptance-checkable | Clear, and states why it's worth doing |
 | Architecture | No design | Just runs | Justified multi-agent / RAG choice | Can articulate the trade-offs |
 | Implementation correctness | Doesn't run | Main path runs | Handles edge cases | Stable and the code is readable |
-| **Evaluation rigor** | Not tested | Tried it a few times by hand | ≥5 cases + pass rate | Has a baseline comparison / a rerunnable regression |
+| **Evaluation rigor** | Not tested | Tried it a few times by hand | Versioned development/holdout cases, success criteria, and grader | Multiple trials, baseline comparison, rerunnable regression, and no holdout tuning |
 | Robustness & failure analysis | None | Risks mentioned | Concrete failure modes | Failures are detected + mitigated |
 | Interface & docs | None | Runs | Interface + clear README | Others can use it directly |
 | Reflection | None | One sentence | Concrete (names a specific problem in the architecture or component choice) | Points to an architecture-level next step |

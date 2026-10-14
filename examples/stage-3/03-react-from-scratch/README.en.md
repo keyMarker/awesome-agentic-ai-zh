@@ -4,7 +4,14 @@
 
 # Exercise 3: ReAct from Scratch (no framework)
 
-Corresponds to [Stage 3 — Tool Use & Agent Intro](../../../stages/03-tool-use-and-hello-agent.en.md) Exercise 3.
+Corresponds to [Stage 3 — Tool Use & Your First Agent Loop](../../../stages/03-tool-use-and-hello-agent.en.md) Exercise 3.
+> 🎓 **How to use this**: First run the provided `starter.py` (`python starter.py`), then change exactly one small thing and run the existing test again: `python test.py`. If the test fails, undo or fix that one change and try again. You do not need to rename the file or rewrite the whole solution. See [`docs/HOW_TO_USE.md`](../../../docs/HOW_TO_USE.md) for the full method.
+
+> 📚 **Want the chapter-length version?** The starter in this folder is a 70-150 line illustrative build focused on `the core pattern + two SDK paths` — it is not in-depth teaching material. Recommended for depth:
+> - [`datawhalechina/hello-agents`](https://github.com/datawhalechina/hello-agents) ⭐ the most complete Chinese-language course out there — chapter-based, covering 16 production capabilities. **this exercise maps to hello-agents' ReAct chapter (paired with the [`learn_version` branch](https://github.com/jjyaoao/HelloAgents/tree/learn_version))**
+> - [The original ReAct paper](https://arxiv.org/abs/2210.03629) (Yao et al. 2022, Section 3) + [pguso/ai-agents-from-scratch](https://github.com/pguso/ai-agents-from-scratch) (from-scratch implementation on a local LLM)
+> - Full references in [Stage 3 Curated Projects](../../../stages/03-tool-use-and-hello-agent.en.md#-curated-projects)
+
 
 ## Why write it from scratch
 
@@ -18,6 +25,7 @@ while not done:
 ```
 
 LangGraph / CrewAI hide this loop from you. **Writing it once yourself** is what teaches you:
+
 - Why the `messages` array keeps growing
 - How `tool_use_id` pairs with `tool_result`
 - Why `stop_reason` is `tool_use` vs `end_turn`
@@ -25,15 +33,30 @@ LangGraph / CrewAI hide this loop from you. **Writing it once yourself** is what
 
 All of that is covered in 70 lines of Python.
 
-## How to run
+## How to run — two paths
 
-```bash
+### Path A (default, free, local)
+
+```powershell
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=sk-ant-...
+ollama pull qwen2.5:3b
+ollama serve
 python starter.py
 ```
 
-Expected:
+Budget: **$0 API cost**; hardware, memory, and electricity are excluded.
+
+### Path B (Anthropic, cloud comparison)
+
+```powershell
+pip install -r requirements.txt
+$env:ANTHROPIC_API_KEY = "your-key"
+python starter_anthropic.py
+```
+
+Budget: reserve **$0.05** per run. Actual cost is `input tokens × $1 / 1,000,000 + output tokens × $5 / 1,000,000`; Tool Use also adds prompt tokens. Prices checked on `2026-08-27`.
+
+Expected output (Path A, local):
 
 ```
 ❓ Question: Divide 'Taipei population' by 'NYC population', 4 decimal places.
@@ -53,9 +76,12 @@ Expected:
 
 ## Validate the logic without spending API credits
 
-```bash
-python test.py
+```powershell
+python test.py            # validates Path A (Ollama) starter.py logic
+python test_anthropic.py  # validates Path B (Anthropic) starter_anthropic.py logic
 ```
+
+Both test suites use `unittest.mock`, no real API call, $0/run. Path A uses the OpenAI-compat response shape; Path B uses Anthropic content blocks.
 
 `test.py` uses `unittest.mock.MagicMock` to replace the Anthropic client and feed canned responses, validating your loop logic. Expected:
 
@@ -85,17 +111,17 @@ python test.py
 1. **Forgetting to append the assistant response to messages** — next round the LLM can't see what it just said, leading to infinite loops
 2. **Not passing `tool_use_id` with tool_result** — the LLM can't pair results to calls
 3. **`while True` without `max_iter`** — if a tool returns garbage the LLM may call it forever; safety net is mandatory
-4. **Unfiltered eval** — `eval(user_input)` in calculator = RCE; use a whitelist or `ast.literal_eval`
+4. **Unfiltered eval**: never send model text to `eval`, or it can become an RCE; do not rely on a character whitelist or `ast.literal_eval` for arithmetic. Use an explicit AST operator allowlist with input-length, AST-depth, node-count, and number/result bounds.
 
 ## Want smarter answers?
 
-Default model is `claude-haiku-4-5` (cheapest). Switch to Sonnet:
+Default model is the pinned ID `claude-haiku-4-5-20251001`. To compare Sonnet:
 
-```bash
-MODEL=claude-sonnet-4-6 python starter.py
+```powershell
+$env:MODEL = "claude-sonnet-5"; python starter_anthropic.py
 ```
 
-Or change `MODEL = ...` in `starter.py`.
+Or change `MODEL = ...` in `starter_anthropic.py`.
 
 ## Extensions
 

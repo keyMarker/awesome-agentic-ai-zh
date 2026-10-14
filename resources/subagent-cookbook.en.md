@@ -19,7 +19,7 @@ Each recipe uses the same 4-part structure:
 | **Prompt Template** | Copy-paste-ready instruction text | No need to invent the prompt yourself |
 | **When Not to Use It** | A better alternative than using a subagent | Avoid overkill |
 
-> 💡 **How to actually dispatch a subagent**: in your Claude Code terminal conversation, **type or paste the prompt template directly**. That is all. Claude sees the instruction, automatically uses the Task tool (Claude Code’s internal dispatch mechanism) to find the right subagent, runs it, and returns a short summary to the main session. **No slash command or special syntax is required**.
+> 💡 **How to actually dispatch a subagent**: in your Claude Code terminal conversation, **type or paste the prompt template directly**. That is all. Claude sees the instruction, automatically uses the **Agent tool** (Claude Code’s internal dispatch mechanism) to find the right subagent, runs it, and returns a short summary to the main session. **No slash command or special syntax is required**.
 >
 > 📌 **Subagent vs slash command**: `/agents` is a list command, **not how you invoke a subagent**. To dispatch a subagent, type ordinary prompt text directly. For complete comparison tables (subagent vs skill / vs slash command / description router), see [Stage 5.5 §Common Confusing Concepts Clarified](../stages/05-claude-code-ecosystem.en.md#55--subagents-claude-codes-native-multi-agent-mechanism--2025-new-feature).
 
@@ -361,6 +361,6 @@ Subagents are not free. Every dispatch **spends tokens and adds latency**. In th
 ## Next Steps
 
 - **Understand the full theory** (how subagents differ from skills / MCP, and the 3 multi-agent mechanisms) → [Stage 5.5](../stages/05-claude-code-ecosystem.en.md#55--subagents-claude-codes-native-multi-agent-mechanism--2025-new-feature)
-- **CLI daily-use playbook** → [`tracks/cli/A3-cli-production.md` Playbook 4](../tracks/cli/A3-cli-production.en.md#-playbook-4-dispatching-subagents-for-independent-tasks)
-- **See where subagents fit in the agent paradigm map** → [`resources/agent-paradigms.md`](./agent-paradigms.en.md#subagent--spawning-an-agent-inside-an-agent-runtime)
-- **Glossary lookup** → [`resources/glossary.md` § 5. Claude Code Ecosystem — Subagent](./glossary.en.md#subagent)
+- **CLI daily-use playbook** → [`tracks/cli/A3-cli-production.en.md` Playbook 4](../tracks/cli/A3-cli-production.en.md#-playbook-4-dispatching-subagents-for-independent-tasks)
+- **See where subagents fit in the agent paradigm map** → [`resources/agent-paradigms.en.md`](./agent-paradigms.en.md#subagent--spawning-an-agent-inside-an-agent-runtime)
+- **Glossary lookup** → [`resources/glossary.en.md` § 5. Claude Code Ecosystem — Subagent](./glossary.en.md#subagent)

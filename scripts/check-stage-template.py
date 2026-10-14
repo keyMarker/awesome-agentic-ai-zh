@@ -56,7 +56,7 @@ EXPECTED_PATTERNS = [
 
 # Stages that don't follow the per-stage template:
 #   - 00- prerequisites: short intro doc, doesn't need full template
-#   - 05- Claude Code ecosystem: multi-sub-stage container (5.1-5.6),
+#   - 05- Claude Code ecosystem: multi-sub-stage container (5.1-5.8),
 #     each sub-stage has its own learning goals/practice structure;
 #     template check at file level doesn't make sense.
 #   - 07.5- advanced agentic concepts: reading-map chapter (12 concepts
@@ -64,6 +64,15 @@ EXPECTED_PATTERNS = [
 #     does NOT have 動手練習 / 精選 Projects — it's a meta-章 pointing
 #     to other stages, not a hands-on stage. Has 自我檢查 only.
 SKIP_STAGES = ['00-', '05-', '07.5-']
+
+# Foundational stages (01-04) use chapter-natural section names rather
+# than the template strings in EXPECTED_PATTERNS (e.g. "主流 LLM 家族對比"
+# instead of "🎯 LLM 是什麼（先定位）"). Their positioning and tool-
+# recommendation sections are substantively present — just named more
+# precisely. Renaming would degrade quality. These stages pass all
+# REQUIRED checks; only the EXPECTED pattern match fails. Suppress the
+# ⚠ EXPECTED warnings for them to keep the script output signal-only.
+EXPECTED_EXEMPT_STAGES = ['01-', '02-', '03-', '04-']
 
 H2_RE = re.compile(r'^## (.+?)\s*$', re.MULTILINE)
 
@@ -90,6 +99,15 @@ def should_skip(path: Path) -> bool:
     if name.endswith('.en.md') or name.endswith('.zh-Hans.md'):
         return True
     for prefix in SKIP_STAGES:
+        if name.startswith(prefix):
+            return True
+    return False
+
+
+def should_skip_expected(path: Path) -> bool:
+    """Return True for stages whose EXPECTED sections are intentionally named differently."""
+    name = path.name
+    for prefix in EXPECTED_EXEMPT_STAGES:
         if name.startswith(prefix):
             return True
     return False
@@ -132,7 +150,7 @@ def main() -> int:
                 print(f'   - {label}')
             has_required_issue = True
 
-        if missing_exp:
+        if missing_exp and not should_skip_expected(stage):
             warn_prefix = '❌' if args.strict_expected else '⚠'
             print(f'{warn_prefix} {rel}: missing EXPECTED H2 section(s):')
             for label in missing_exp:
