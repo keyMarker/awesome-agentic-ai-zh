@@ -44,7 +44,7 @@ AUDITED_PAGES = {
     "resources/model-training-guide.md": ("SFT", "DPO", "RLHF", "RL", "GRPO", "PEFT", "LoRA", "RAG", "GPU", "LLM"),
     "stages/01-llm-basics.md": ("SFT", "DPO", "RLHF", "RL", "GRPO", "PEFT", "LoRA", "LLM", "RAG", "API", "SDK"),
     "resources/glossary.md": ("RLHF", "RL", "GRPO", "PEFT", "LoRA", "RAG", "MCP", "LLM", "API"),
-    "stages/06-memory-rag.md": ("RAG", "CRAG"),
+    "stages/06-memory-rag.md": ("RAG",),
     "resources/advanced-rag.md": ("RAG", "CRAG", "LLM", "MRR", "nDCG", "HyDE", "RAPTOR"),
     "stages/00-foundations.md": ("API", "JSON"),
     "tracks/cli/A1-cli-intro.md": ("CLI", "LLM", "API"),
@@ -170,6 +170,61 @@ def assert_first_reader_expansion(text: str, term: str, full_name: str) -> None:
 @pytest.mark.parametrize("canonical,term", [(p, t) for p, terms in AUDITED_PAGES.items() for t in terms])
 def test_audited_pages_define_first_reader_encounter(canonical: str, term: str, locale: str) -> None:
     assert_first_reader_expansion(locale_path(canonical, locale).read_text(encoding="utf-8"), term, FULL_NAMES[term])
+    if canonical == "stages/06-memory-rag.md":
+        # The entry paragraph routes to depth; keep its full terminology there.
+        advanced = locale_path("resources/advanced-rag.md", locale)
+        stage = locale_path(canonical, locale).read_text(encoding="utf-8")
+        assert f"../resources/{advanced.name}" in stage
+        detail = advanced.read_text(encoding="utf-8")
+        for name in ("Hybrid Search", "Reranking", "HyDE", "Multi-Query", "RAG Fusion",
+                     "Contextual Retrieval", "GraphRAG", "Self-RAG", "CRAG",
+                     "Adaptive RAG", "Agentic RAG", "RAPTOR", "DSPy"):
+            assert name in detail, f"advanced route lost {name}"
+
+
+@pytest.mark.parametrize("locale,meaning", [
+    ("zh-TW", "關鍵字排名方法"),
+    ("en", "keyword ranking method"),
+    ("zh-Hans", "关键词排名方法"),
+])
+def test_advanced_rag_explains_bm25_before_combining_searches(locale: str, meaning: str) -> None:
+    """BM25 needs a useful meaning, not merely an acronym expansion or late glossary."""
+    text = locale_path("resources/advanced-rag.md", locale).read_text(encoding="utf-8")
+    parsed = reader_blocks(text)
+    first = next(block for block in parsed.blocks if _token("BM25").search(" ".join(block.parts)))
+    assert meaning in " ".join(first.parts)
+    visible = "\n".join(" ".join(block.parts) for block in parsed.blocks)
+    assert visible.index("Embedding") < visible.index("Vector Search") < visible.index("BM25")
+    assert visible.index("BM25") < visible.index("Hybrid Search") < visible.index("Reranking")
+    assert "AB-123" in visible
+
+
+@pytest.mark.parametrize("locale,meanings", [
+    ("zh-TW", ("預訓練", "指令", "任務", "資訊", "動作", "停止")),
+    ("en", ("pretrained", "instructions", "task", "information", "actions", "stopping")),
+    ("zh-Hans", ("预训练", "指令", "任务", "信息", "动作", "停止")),
+])
+def test_model_and_agent_parts_are_explained_before_the_lifecycle_image(locale: str, meanings: tuple[str, ...]) -> None:
+    text = locale_path("stages/01-llm-basics.md", locale).read_text(encoding="utf-8")
+    image = re.search(r"^!\[.*?\]\(.*model-lifecycle-to-agent.*\)", text, re.M)
+    assert image is not None
+    parsed = reader_blocks(text[:image.start()])
+    terms = ("Base Model", "Instruct Model", "Prompt", "Memory", "Tools", "Harness")
+    for term, meaning in zip(terms, meanings):
+        first = next(block for block in parsed.blocks if _token(term).search(" ".join(block.parts)))
+        assert meaning in " ".join(first.parts), f"{term} needs a plain meaning before the image"
+
+
+@pytest.mark.parametrize("locale,unit", [
+    ("zh-TW", "每百萬 token"), ("en", "per million tokens"), ("zh-Hans", "每百万 token"),
+])
+def test_cli_cost_formula_declares_and_converts_both_price_units(locale: str, unit: str) -> None:
+    text = locale_path("tracks/cli/A3-cli-production.md", locale).read_text(encoding="utf-8")
+    formula = re.search(r"`([^`\n]*input tokens[^`\n]*output tokens[^`\n]*)`", text)
+    assert formula is not None
+    assert unit in text[:formula.start()]
+    assert "input tokens ÷ 1,000,000 × input price" in formula.group(1)
+    assert "output tokens ÷ 1,000,000 × output price" in formula.group(1)
 
 
 @pytest.mark.parametrize("text", [

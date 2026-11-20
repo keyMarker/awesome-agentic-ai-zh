@@ -53,10 +53,10 @@ README source ceilings remain 14000. Every other page cap and the existing
 disclosure/resource/heading ratchets stay unchanged.
 This is a bounded contract refresh for the newly required visible definitions,
 not a claim that the old size metric is unchanged or a measure of reading quality.
-Rebuild all three PDFs and inspect representative new legends, definitions and
-existing wide tables, in addition to every-page text/bounds checks, before release.
+Releases publish Traditional Chinese, Simplified Chinese, and English notes without
+generating or attaching PDFs. The PDF checks below apply only to standalone manual exports.
 
-## Release PDF layout checks
+## Standalone PDF export layout checks (outside releases)
 
 `scripts/build-pdf.sh` marks generated tables with eight or more header columns for
 A4 landscape pages. Curriculum text, URLs, natural column widths, and the existing
@@ -414,13 +414,13 @@ mainline plus only 50 non-whitespace characters.
 
 ### Course map — learn first, certificate second
 
-`resources/courses*` keeps five bold credential terms, a task-first chooser, 11 rated courses, a
+`resources/courses*` keeps five bold credential terms, a task-first chooser, 13 rated courses, a
 copyable five-line work-evidence card, and visible return links to Stages 3／4／7. The two disclosures
 hold only certificate caveats and maintainer rules. The main table uses four accessible rowgroups
-(`3／4／2／2`); each course row has one primary URL, while the Datawhale companion stays outside the
+(`3／6／2／2`); each course row has one primary URL, while the Datawhale companion stays outside the
 table so category and rating semantics remain unambiguous.
 
-`scripts/test_courses_content.py` locks the 11 URL／rating pairs, full 20-link order, exact freshness
+`scripts/test_courses_content.py` locks the 13 URL／rating pairs, full 24-link order, exact freshness
 marker, closed disclosure count, portfolio card, locale-correct stage links, and current facts such
 as the Hugging Face 80% Unit 1 threshold, Microsoft／Datawhale no-certificate status, DeepLearning.AI
 Pro boundary, Claude quiz badge, and Alibaba identity

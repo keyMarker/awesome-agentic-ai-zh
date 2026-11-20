@@ -64,8 +64,10 @@ WEASYPRINT_LOG="$BUILD_DIR/weasyprint.log"
 RESOURCE_PATH="$REPO_ROOT:$REPO_ROOT/stages:$REPO_ROOT/tracks/cli:$REPO_ROOT/branches:$REPO_ROOT/walkthroughs:$REPO_ROOT/resources"
 
 echo "Building $OUT_NAME"
+# The GFM reader leaves CJK-adjacent **core terms** literal. Pandoc Markdown
+# accepts these boundaries; explicitly retain the GFM features used by our pages.
 if ! pandoc "$SOURCE_MD" \
-  --from=gfm-tex_math_dollars+raw_html \
+  --from=markdown+pipe_tables+strikeout+task_lists+autolink_bare_uris+gfm_auto_identifiers-tex_math_dollars-blank_before_header-blank_before_blockquote-markdown_in_html_blocks-smart+raw_html \
   --to=html5 \
   --standalone \
   --embed-resources \

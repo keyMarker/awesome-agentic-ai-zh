@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import importlib.util
 import re
+import shutil
+import subprocess
 from collections import Counter
 from datetime import date, datetime
 from pathlib import Path
@@ -59,6 +61,39 @@ def test_release_notes_are_trilingual_mirrors() -> None:
         assert rendered.count(f"]({link})") == count * len(rm.LOCALES)
 
 
+@pytest.mark.parametrize("locale", rm.LOCALES)
+def test_current_model_reference_keeps_public_api_ids(locale: str) -> None:
+    """Keep established API facts without requiring old changes in every release."""
+    from model_reference_test_helpers import family_cells
+
+    page = rm.ROOT / f"stages/01-llm-basics{rm.LOCALE_SUFFIX[locale]}.md"
+    source = page.read_text(encoding="utf-8")
+    for family, model_id in (("Claude", "claude-haiku-5-5"), ("Gemini", "gemini-4-argon")):
+        assert model_id in family_cells(source, family)[1]
+
+
+@pytest.mark.parametrize("locale", rm.LOCALES)
+def test_october_29_third_notes_cover_only_the_new_release_window(locale: str) -> None:
+    notes = rm.validate_notes_manifest()
+    assert notes["release_version"] == "v2026.10.29-3"
+    changes = {change["id"]: change for change in notes["changes"]}
+    assert set(changes) == {
+        "rag-search-terms-and-comparisons", "execution-and-isolation-boundaries",
+        "model-terms-and-token-price-units",
+    }
+    rag = changes["rag-search-terms-and-comparisons"][locale]
+    assert all(term in rag for term in ("BM25", "Recall@5", "13", "12"))
+    safety = changes["execution-and-isolation-boundaries"][locale]
+    assert all(term in safety for term in ("Stage 5", "Stage 6", "Stage 8", "Path A", "Path B"))
+    models = changes["model-terms-and-token-price-units"][locale]
+    assert all(term in models for term in ("Base Model", "Instruct Model", "A3", "token"))
+    assert {"zh-TW": "每百萬", "zh-Hans": "每百万", "en": "per million"}[locale] in models
+    links = {link for change in changes.values() for link in change["links"]}
+    assert links == {
+        f"https://github.com/WenyuChiou/awesome-agentic-ai-zh/pull/{pr}"
+        for pr in (356, 357, 358)
+    }
+
 def test_validate_version_uses_utc_date(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[object] = []
 
@@ -94,6 +129,44 @@ def test_asset_names_are_exact_and_locale_specific() -> None:
     assert rm.asset_name("v2026.08.31", "zh-TW") == "awesome-agentic-ai-zh-v2026.08.31-zh-TW.pdf"
     assert rm.asset_name("v2026.08.31-2", "zh-Hans") == "awesome-agentic-ai-zh-v2026.08.31-2-zh-Hans.pdf"
     assert rm.asset_name("v2026.08.31", "en") == "awesome-agentic-ai-zh-v2026.08.31-en.pdf"
+
+
+@pytest.mark.parametrize("term", ["**快取（cache）**像便條", "**缓存（cache）**像便条", "**Cache** is a note"])
+def test_pdf_html_rejects_visible_unparsed_emphasis(term: str) -> None:
+    with pytest.raises(rm.ReleaseManifestError, match="unparsed Markdown emphasis"):
+        rm.prepare_pdf_html(f"<html><body><p>{term}</p></body></html>")
+
+
+def test_pdf_html_preserves_literal_emphasis_in_code_and_styles() -> None:
+    source = '<style>/* **literal** */</style><pre><code>**example**</code></pre><p><code>**inline**</code></p>'
+    assert rm.prepare_pdf_html(source) == source
+
+
+@pytest.mark.parametrize("term", ["快取（cache）", "缓存（cache）", "Cache"])
+def test_pdf_reader_renders_core_terms_without_rewriting_code(term: str) -> None:
+    pandoc = shutil.which("pandoc")
+    if pandoc is None:
+        pytest.skip("Pandoc runtime required; production prepare-html gate also checks visible emphasis")
+    script = (rm.ROOT / "scripts/build-pdf.sh").read_text(encoding="utf-8")
+    reader = re.search(r"--from=([^\s\\]+)", script)
+    assert reader is not None
+    source = (f'**{term}**像便條。\n\n`**literal**`\n\n```python\npattern = "**literal**"\n```\n'
+              '\n<a id="legacy"></a>\n## Resources\n\n| Kind | URL |\n|---|---|\n'
+              '| Official | https://example.com/ |\n\n- [ ] Task\n\n~~old~~\n'
+              '\n<table><tr><th rowspan="2">Shared</th><td>First</td></tr>'
+              '<tr><td>Second</td></tr></table>\n')
+    result = subprocess.run([pandoc, "--from=" + reader.group(1), "--to=html5"],
+                            input=source, text=True, encoding="utf-8", capture_output=True, check=True)
+    assert f"<strong>{term}</strong>" in result.stdout
+    assert '<code>**literal**</code>' in result.stdout
+    assert '&quot;**literal**&quot;' in result.stdout
+    assert '<h2 id="resources">Resources</h2>' in result.stdout
+    assert result.stdout.count('<table>') == 2
+    assert 'rowspan="2"' in result.stdout
+    assert '<a href="https://example.com/"' in result.stdout
+    assert '<del>old</del>' in result.stdout
+    assert 'type="checkbox"' in result.stdout
+    assert rm.prepare_pdf_html(result.stdout) == result.stdout
 
 
 def test_pdf_table_text_keeps_whole_words() -> None:

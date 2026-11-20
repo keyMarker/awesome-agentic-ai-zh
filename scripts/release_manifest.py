@@ -399,7 +399,7 @@ def _heading_key(value: str) -> str:
 
 
 def prepare_pdf_html(source: str) -> str:
-    """Mark eight-column tables for landscape pages; preserve source content."""
+    """Reject unparsed emphasis and mark wide tables; preserve source content."""
     offsets = [0]
     for line in source.splitlines(keepends=True):
         offsets.append(offsets[-1] + len(line))
@@ -409,8 +409,11 @@ def prepare_pdf_html(source: str) -> str:
         def __init__(self) -> None:
             super().__init__(convert_charrefs=False)
             self.tables: list[dict[str, Any]] = []
+            self.ignored_depth = 0
 
         def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+            if tag in {"code", "pre", "script", "style"}:
+                self.ignored_depth += 1
             if tag == "table":
                 line, column = self.getpos()
                 self.tables.append({"start": offsets[line - 1] + column,
@@ -432,6 +435,8 @@ def prepare_pdf_html(source: str) -> str:
                     table["columns"] += count
 
         def handle_endtag(self, tag: str) -> None:
+            if tag in {"code", "pre", "script", "style"} and self.ignored_depth:
+                self.ignored_depth -= 1
             if not self.tables:
                 return
             table = self.tables[-1]
@@ -468,6 +473,11 @@ def prepare_pdf_html(source: str) -> str:
                     # tables use either no class or a quoted class attribute.
                     changed = original[:-1] + ' class="release-wide-table">'
                 replacements.append((table["start"], len(original), changed))
+
+        def handle_data(self, data: str) -> None:
+            if not self.ignored_depth and re.search(r"\*\*[^*\n]+\*\*", data):
+                snippet = " ".join(data.split())[:100]
+                raise ReleaseManifestError(f"unparsed Markdown emphasis in PDF HTML: {snippet}")
 
     parser = Tables()
     parser.feed(source)

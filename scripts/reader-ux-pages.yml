@@ -25,12 +25,34 @@ pages:
     mirrors:
       en: stages/00-foundations.en.md
       zh-Hans: stages/00-foundations.zh-Hans.md
+    # Short visible steps and numbered labels; commands and secondary
+    # details are closed. Lowered after the maintainer readability review.
     max_visible_chars:
-      zh-TW: 5238
-      en: 7715
-      zh-Hans: 5289
+      zh-TW: 6050
+      en: 11000
+      zh-Hans: 6120
     max_open_details: 0
     required_visible_sections:
+      learning-goals:
+        zh-TW:
+          heading: 📌 學習目標
+          anchor: -學習目標
+        en:
+          heading: 📌 Learning Goals
+          anchor: -learning-goals
+        zh-Hans:
+          heading: 📌 学习目标
+          anchor: -学习目标
+      core-terms:
+        zh-TW:
+          heading: 🔑 核心名詞
+          anchor: -核心名詞
+        en:
+          heading: 🔑 Core Terms
+          anchor: -core-terms
+        zh-Hans:
+          heading: 🔑 核心名词
+          anchor: -核心名词
       skip-check:
         zh-TW:
           heading: 何時可以跳過這個階段
@@ -74,6 +96,201 @@ pages:
     visible_section_minimums:
       resources: {min_links: 18, min_ratings: 18}
     resource_group_rowspans: [5, 4, 3, 3, 3]
+    core_terms:
+      section_id: core-terms
+      first_exercise_section_id: main-practice
+      min_definition_chars: 16
+      terms:
+      - id: '1'
+        zh-TW:
+          term: Python
+          label: Python
+        en:
+          term: Python
+          label: Python
+        zh-Hans:
+          term: Python
+          label: Python
+      - id: '2'
+        zh-TW:
+          term: Terminal
+          label: Terminal（終端機）
+        en:
+          term: Terminal
+          label: Terminal
+        zh-Hans:
+          term: Terminal
+          label: Terminal（终端）
+      - id: '3'
+        zh-TW:
+          term: CLI
+          label: CLI（Command-Line Interface，命令列介面）
+        en:
+          term: CLI
+          label: CLI (Command-Line Interface)
+        zh-Hans:
+          term: CLI
+          label: CLI（Command-Line Interface，命令行界面）
+      - id: '4'
+        zh-TW:
+          term: Shell
+          label: Shell（指令解讀器）
+        en:
+          term: Shell
+          label: Shell
+        zh-Hans:
+          term: Shell
+          label: Shell（命令解释器）
+      - id: '5'
+        zh-TW:
+          term: API
+          label: API（Application Programming Interface，應用程式介面）
+        en:
+          term: API
+          label: API (Application Programming Interface)
+        zh-Hans:
+          term: API
+          label: API（Application Programming Interface，应用程序接口）
+      - id: '6'
+        zh-TW:
+          term: JSON
+          label: JSON（JavaScript Object Notation）
+        en:
+          term: JSON
+          label: JSON (JavaScript Object Notation)
+        zh-Hans:
+          term: JSON
+          label: JSON（JavaScript Object Notation）
+      - id: '7'
+        zh-TW:
+          term: YAML
+          label: YAML（YAML Ain’t Markup Language）
+        en:
+          term: YAML
+          label: YAML (YAML Ain’t Markup Language)
+        zh-Hans:
+          term: YAML
+          label: YAML（YAML Ain’t Markup Language）
+      - id: '8'
+        zh-TW:
+          term: API token
+          label: API token
+        en:
+          term: API token
+          label: API token
+        zh-Hans:
+          term: API token
+          label: API token
+      - id: '9'
+        zh-TW:
+          term: GitHub
+          label: GitHub
+        en:
+          term: GitHub
+          label: GitHub
+        zh-Hans:
+          term: GitHub
+          label: GitHub
+      - id: '10'
+        zh-TW:
+          term: Git
+          label: Git
+        en:
+          term: Git
+          label: Git
+        zh-Hans:
+          term: Git
+          label: Git
+      - id: '11'
+        zh-TW:
+          term: Repository
+          label: Repository（Repo）
+        en:
+          term: Repository
+          label: Repository (Repo)
+        zh-Hans:
+          term: Repository
+          label: Repository（Repo）
+      - id: '12'
+        zh-TW:
+          term: README
+          label: README
+        en:
+          term: README
+          label: README
+        zh-Hans:
+          term: README
+          label: README
+      - id: '13'
+        zh-TW:
+          term: License
+          label: License
+        en:
+          term: License
+          label: License
+        zh-Hans:
+          term: License
+          label: License
+      - id: '14'
+        zh-TW:
+          term: Issue
+          label: Issue
+        en:
+          term: Issue
+          label: Issue
+        zh-Hans:
+          term: Issue
+          label: Issue
+      - id: '15'
+        zh-TW:
+          term: Branch
+          label: Branch
+        en:
+          term: Branch
+          label: Branch
+        zh-Hans:
+          term: Branch
+          label: Branch
+      - id: '16'
+        zh-TW:
+          term: Commit
+          label: Commit
+        en:
+          term: Commit
+          label: Commit
+        zh-Hans:
+          term: Commit
+          label: Commit
+      - id: '17'
+        zh-TW:
+          term: Push
+          label: Push
+        en:
+          term: Push
+          label: Push
+        zh-Hans:
+          term: Push
+          label: Push
+      - id: '18'
+        zh-TW:
+          term: Pull Request
+          label: Pull Request（PR）
+        en:
+          term: Pull Request
+          label: Pull Request (PR)
+        zh-Hans:
+          term: Pull Request
+          label: Pull Request（PR）
+      - id: '19'
+        zh-TW:
+          term: Merge
+          label: Merge
+        en:
+          term: Merge
+          label: Merge
+        zh-Hans:
+          term: Merge
+          label: Merge
     parity:
       ordered_external_urls: true
       resource_url_ratings: true
@@ -84,10 +301,11 @@ pages:
       en: stages/01-llm-basics.en.md
       zh-Hans: stages/01-llm-basics.zh-Hans.md
     max_visible_chars:
-      # Stage 1 Path A response guards; visible source measured 2026-10-12.
-      zh-TW: 9195
-      en: 14025
-      zh-Hans: 9221
+      # Required first-use definitions add 211/466/211 measured characters.
+      # Pin the observed totals; no extra headroom or hidden core content.
+      zh-TW: 9586
+      en: 14781
+      zh-Hans: 9612
     max_open_details: 3
     required_visible_sections:
       core-terms:
@@ -1223,7 +1441,7 @@ pages:
       zh-Hans: resources/advanced-rag.zh-Hans.md
     max_visible_chars:
       zh-TW: 6600
-      en: 10900
+      en: 11005
       zh-Hans: 6600
     max_open_details: 0
     required_details_count: 2
@@ -1278,8 +1496,8 @@ pages:
         zh-Hans: {heading: "✅ 自我检查", anchor: -自我检查}
     visible_section_minimums:
       required-reading: {min_links: 6}
-      projects: {min_links: 12, min_ratings: 12}
-    resource_group_rowspans: [4, 4, 4]
+      projects: {min_links: 13, min_ratings: 13}
+    resource_group_rowspans: [4, 5, 4]
 
   - id: agent-memory
     canonical: resources/agent-memory.md
@@ -1288,7 +1506,9 @@ pages:
       zh-Hans: resources/agent-memory.zh-Hans.md
     max_visible_chars:
       zh-TW: 6000
-      en: 9800
+      # Same facts; six-column headers become 45 visible row labels.
+      # Measured 9791 -> 10316 chars; preserve the prior 9-char headroom.
+      en: 10325
       zh-Hans: 6000
     max_open_details: 0
     required_details_count: 2
@@ -1358,8 +1578,8 @@ pages:
         zh-Hans: {heading: "✅ 自我检查", anchor: -自我检查}
     visible_section_minimums:
       required-reading: {min_links: 5}
-      projects: {min_links: 11, min_ratings: 11}
-    resource_group_rowspans: [5, 3, 4]
+      projects: {min_links: 14, min_ratings: 14}
+    resource_group_rowspans: [8, 3, 4]
 
   - id: stage-07
     canonical: stages/07-multi-agent-production.md
@@ -2165,7 +2385,7 @@ pages:
         - "GITHUB_TOKEN"
         - 'permission-profile: ":read-only"'
         - "@v1"
-        - "input tokens × input price + output tokens × output price"
+        - "(input tokens ÷ 1,000,000 × input price) + (output tokens ÷ 1,000,000 × output price)"
         - "provider spend limit"
         - "job timeout"
     required_visible_sections:
@@ -2298,8 +2518,8 @@ pages:
           zh-Hans: {term: Observability, label: "Observability（观测与记录）"}
     visible_section_minimums:
       required-reading: {min_links: 4}
-      projects: {min_links: 18, min_ratings: 18}
-    resource_group_rowspans: [4, 5, 4, 3, 2]
+      projects: {min_links: 19, min_ratings: 19}
+    resource_group_rowspans: [4, 6, 4, 3, 2]
 
   - id: cli-agents-guide
     canonical: resources/cli-agents-guide.md
@@ -2307,9 +2527,11 @@ pages:
       en: resources/cli-agents-guide.en.md
       zh-Hans: resources/cli-agents-guide.zh-Hans.md
     max_visible_chars:
-      zh-TW: 2550
-      en: 4050
-      zh-Hans: 2600
+      # The existing nine-tool catalog is now visible, with repeated field labels.
+      # Measured before/after:1956/3888,3596/7001,2012/3969; prior headroom retained.
+      zh-TW: 4482
+      en: 7455
+      zh-Hans: 4557
     max_open_details: 0
     required_visible_sections:
       comparison:
@@ -3014,7 +3236,7 @@ pages:
           zh-TW: {term: Approval Gate, label: "Approval Gate（人工核准關卡）"}
           en: {term: Approval Gate, label: Approval Gate}
           zh-Hans: {term: Approval Gate, label: "Approval Gate（人工批准关卡）"}
-    resource_group_rowspans: [4, 3, 4, 4, 2, 1]
+    resource_group_rowspans: [4, 8, 4, 4, 2, 1]
 
   - id: public-resources
     canonical: RESOURCES.md
@@ -3347,8 +3569,8 @@ pages:
         en: {heading: "🧪 Leave the same piece of work evidence after every course", anchor: -leave-the-same-piece-of-work-evidence-after-every-course}
         zh-Hans: {heading: "🧪 每学完一门课，都留下同一份作品证据", anchor: -每学完一门课都留下同一份作品证据}
     visible_section_minimums:
-      chooser: {min_links: 8}
-      courses: {min_links: 12, min_ratings: 11}
+      chooser: {min_links: 10}
+      courses: {min_links: 14, min_ratings: 13}
       portfolio: {min_links: 3}
     core_terms:
       section_id: core-terms
@@ -3375,7 +3597,7 @@ pages:
           zh-TW: {term: Certification Exam, label: "Certification Exam（認證考試）"}
           en: {term: Certification Exam, label: Certification Exam}
           zh-Hans: {term: Certification Exam, label: "Certification Exam（认证考试）"}
-    resource_group_rowspans: [3, 4, 2, 2]
+    resource_group_rowspans: [3, 6, 2, 2]
 
   - id: setup-guide
     canonical: resources/setup-guide.md

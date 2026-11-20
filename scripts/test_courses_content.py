@@ -30,9 +30,11 @@ COURSE_PAIRS = (
     ("https://huggingface.co/learn/agents-course", "⭐⭐⭐⭐⭐"),
     ("https://github.com/microsoft/ai-agents-for-beginners", "⭐⭐⭐⭐⭐"),
     ("https://github.com/datawhalechina/hello-agents", "⭐⭐⭐⭐⭐"),
-    ("https://www.deeplearning.ai/courses/agentic-ai/", "⭐⭐⭐⭐⭐"),
+    ("https://www.deeplearning.ai/courses/agentic-ai", "⭐⭐⭐⭐⭐"),
     ("https://academy.claude.com/", "⭐⭐⭐⭐"),
+    ("https://huggingface.co/learn/context-course/unit0/introduction", "⭐⭐⭐⭐"),
     ("https://academy.langchain.com/courses/intro-to-langgraph", "⭐⭐⭐⭐"),
+    ("https://academy.langchain.com/courses/deep-agents-with-langgraph", "⭐⭐⭐⭐"),
     ("https://www.kaggle.com/learn-guide/5-day-agents", "⭐⭐⭐⭐"),
     (
         "https://www.coursera.org/professional-certificates/ibm-rag-and-agentic-ai",
@@ -49,9 +51,11 @@ EXTERNAL_URLS = (
     "https://huggingface.co/learn/agents-course",
     "https://github.com/microsoft/ai-agents-for-beginners",
     "https://github.com/datawhalechina/hello-agents",
-    "https://www.deeplearning.ai/courses/agentic-ai/",
+    "https://www.deeplearning.ai/courses/agentic-ai",
     "https://academy.claude.com/",
     "https://academy.langchain.com/courses/intro-to-langgraph",
+    "https://huggingface.co/learn/context-course/unit0/introduction",
+    "https://academy.langchain.com/courses/deep-agents-with-langgraph",
     "https://www.coursera.org/professional-certificates/ibm-rag-and-agentic-ai",
     "https://www.coursera.org/specializations/ai-agents",
     *(url for url, _ in COURSE_PAIRS),
@@ -110,7 +114,7 @@ def _without_details(text: str) -> str:
 
 
 def _course_table(text: str) -> str:
-    tables = re.findall(r"<table>.*?</table>", text, flags=re.DOTALL)
+    tables = re.findall(r"<table align=\"center\">.*?</table>", text, flags=re.DOTALL)
     assert len(tables) == 1
     return tables[0]
 
@@ -122,7 +126,7 @@ def test_visible_path_keeps_terms_chooser_courses_portfolio_and_return_route(
     text = PAGES[locale].read_text(encoding="utf-8")
     visible = _without_details(text)
     chooser = visible.index("## ⚡")
-    table = visible.index("<table>")
+    table = visible.index('<table align="center">')
     portfolio = visible.index("## 🧪")
 
     for label in CORE_LABELS[locale]:
@@ -153,12 +157,12 @@ def test_two_secondary_disclosures_are_closed_and_render_markdown(page: Path) ->
     assert not re.search(r"<details\b[^>]*\bopen\b", text)
 
 
-def test_course_table_has_eleven_rated_rows_and_four_real_rowgroups() -> None:
+def test_course_table_has_thirteen_rated_rows_and_four_real_rowgroups() -> None:
     for page in PAGES.values():
         table = _course_table(page.read_text(encoding="utf-8"))
         groups = re.findall(r"<tbody>(.*?)</tbody>", table, flags=re.DOTALL)
         assert len(groups) == 4
-        for group, row_count in zip(groups, (3, 4, 2, 2)):
+        for group, row_count in zip(groups, (3, 6, 2, 2)):
             assert len(re.findall(r"<tr>", group)) == row_count
             assert group.count('scope="rowgroup"') == 1
             assert f'rowspan="{row_count}"' in group
@@ -284,7 +288,7 @@ def test_readme_router_and_maintainer_docs_describe_the_new_course_shape() -> No
 
     design = (ROOT / "stages/DESIGN.md").read_text(encoding="utf-8")
     assert "### 課程地圖固定結構" in design
-    assert "`3／4／2／2`" in design
+    assert "`3／6／2／2`" in design
     assert "一列只放一個主課程 URL" in design
     assert "不做證書排行榜" in design
 
@@ -320,6 +324,39 @@ def test_course_fact_pack_does_not_recommend_unavailable_wandb_portal() -> None:
 
     ux = yaml.safe_load((ROOT / "scripts/reader-ux-pages.yml").read_text(encoding="utf-8"))
     page = next(page for page in ux["pages"] if page["canonical"] == "resources/courses.md")
-    assert page["visible_section_minimums"]["chooser"] == {"min_links": 8}
-    assert page["visible_section_minimums"]["courses"] == {"min_links": 12, "min_ratings": 11}
-    assert page["resource_group_rowspans"] == [3, 4, 2, 2]
+    assert page["visible_section_minimums"]["chooser"] == {"min_links": 10}
+    assert page["visible_section_minimums"]["courses"] == {"min_links": 14, "min_ratings": 13}
+    assert page["resource_group_rowspans"] == [3, 6, 2, 2]
+
+
+@pytest.mark.parametrize("locale", PAGES)
+def test_course_picker_renders_all_eight_choices_outside_disclosures(locale: str) -> None:
+    """The phone layout must retain each complete choice and its original links."""
+    import markdown
+    import xml.etree.ElementTree as ET
+
+    source = PAGES[locale].read_text(encoding="utf-8")
+    pickers = re.findall(
+        r'<div class="reader-course-picker" markdown="1">.*?</div>',
+        source,
+        flags=re.DOTALL,
+    )
+    assert len(pickers) == 1, "Course chooser needs its own responsive layout"
+    assert pickers[0] in _without_details(source)
+    rendered = markdown.markdown(
+        pickers[0], extensions=["md_in_html", "tables", "fenced_code"]
+    )
+    picker = ET.fromstring(rendered)
+    assert len(picker.findall("./div[@align='center']/table/thead/tr/th")) == 3
+    rows = picker.findall("./div[@align='center']/table/tbody/tr")
+    assert len(rows) == 8
+    for row in rows:
+        cells = row.findall("td")
+        assert len(cells) == 3
+        assert all("".join(cell.itertext()).strip() for cell in cells)
+        assert cells[1].find(".//a[@href]") is not None
+        assert row.find(".//br") is None
+        assert row.find(".//details") is None
+    assert [link.attrib["href"] for link in picker.findall(".//a[@href]")] == list(
+        EXTERNAL_URLS[:10]
+    )

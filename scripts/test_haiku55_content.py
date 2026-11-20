@@ -11,6 +11,8 @@ from types import SimpleNamespace
 
 import pytest
 
+from model_reference_test_helpers import family_cells
+
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ('', '.en', '.zh-Hans')
 
@@ -23,7 +25,7 @@ def snippets(locale):
 @pytest.mark.parametrize('locale', LOCALES)
 def test_current_haiku_facts_and_historical_boundary(locale):
     text, code = snippets(locale)
-    row = next(line for line in text.splitlines() if line.startswith('| Claude |'))
+    row = ' '.join(family_cells(text, 'Claude'))
     assert 'Haiku 5.5 (`claude-haiku-5-5`)' in row
     assert 'Haiku 4.5' not in row
     assert '1M' in row and '128K' in row and '200K' not in row
